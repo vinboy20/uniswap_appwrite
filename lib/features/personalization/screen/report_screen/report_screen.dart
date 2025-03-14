@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:uniswap/common/widgets/appbar/appbar.dart';
 import 'package:uniswap/common/widgets/button/custom_elevated_button.dart';
 import 'package:uniswap/common/widgets/form/custom_text_form_field.dart';
 import 'package:uniswap/core/app_export.dart';
+import 'package:uniswap/core/utils/helpers/loaders.dart';
 import 'package:uniswap/core/utils/validators/validation.dart';
 import 'package:uniswap/theme/custom_button_style.dart';
 import 'package:uniswap/controllers/user_controller.dart'; // Import UserController
@@ -23,15 +25,24 @@ class _ReportScreenState extends State<ReportScreen> {
   final UserController _userController = Get.put(UserController()); // Initialize UserController
 
   Future<void> _submitReport() async {
-    if (_formKey.currentState!.validate()) {
-      try {
-        await _userController.submitReport(
-          email: emailController.text.trim(),
-          report: inputReportController.text.trim(),
-        );
-      } catch (e) {
-        // Handle errors (already handled in UserController)
+    EasyLoading.show(status: "processing");
+    try {
+      if (!_formKey.currentState!.validate()) {
+        EasyLoading.dismiss();
+        return;
       }
+      await _userController.submitReport(
+        email: emailController.text.trim(),
+        report: inputReportController.text.trim(),
+      );
+      inputReportController.text = "";
+      emailController.text = "";
+      EasyLoading.dismiss();
+      TLoaders.successSnackBar(title: "Success", message: "Your report has been submitted");
+    } catch (e) {
+      EasyLoading.dismiss();
+       TLoaders.successSnackBar(title: "Error", message: e.toString());
+      // Handle errors (already handled in UserController)
     }
   }
 
@@ -74,7 +85,7 @@ class _ReportScreenState extends State<ReportScreen> {
                     SizedBox(height: 26.h),
                     Text(
                       "What is your report?",
-                      style: theme.textTheme.bodyMedium,
+                      style: CustomTextStyles.text14w400,
                     ),
                     SizedBox(height: 12.h),
                     CustomTextFormField(
@@ -89,6 +100,12 @@ class _ReportScreenState extends State<ReportScreen> {
                       borderDecoration: TextFormFieldStyleHelper.outlineOnErrorTL25,
                       filled: true,
                       fillColor: TColors.softGrey,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Please enter a report";
+                        }
+                        return null;
+                      },
                     ),
                     SizedBox(height: 36.h),
                     CustomElevatedButton(

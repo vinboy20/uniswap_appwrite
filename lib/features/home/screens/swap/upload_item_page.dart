@@ -872,6 +872,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                 ),
                               ],
                             ),
+                          
                           ],
                         )
                       : Column(
@@ -1003,6 +1004,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                     ),
                                   ],
                                 ),
+                                
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -1036,6 +1038,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                 ),
                               ],
                             ),
+                          
                           ],
                         ),
 

@@ -80,7 +80,7 @@ class CustomDropDown extends StatelessWidget {
           focusNode: focusNode ?? FocusNode(),
           icon: icon,
           autofocus: autofocus!,
-          style: textStyle ?? CustomTextStyles.text14w400,
+          style: textStyle ?? CustomTextStyles.text12w400,
           items: items?.map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,

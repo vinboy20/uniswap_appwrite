@@ -84,7 +84,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             onTap: () {
               Navigator.pop(context);
               Future.microtask(() {
-                Get.off(() => const BidScreen());
+                Get.to(() => const BidScreen());
               });
             },
             child: Row(
@@ -125,7 +125,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
             onTap: () {
               // Navigator.pushNamed(navigatorKey.currentContext!, AppRoutes.ticketManagementScreen);
               Navigator.pop(context);
-              Get.off(() => const TicketManagementScreen());
+              Get.to(() => const TicketManagementScreen());
             },
           ),
           SizedBox(height: 38.h),

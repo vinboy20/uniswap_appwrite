@@ -25,6 +25,7 @@ class Credentials {
   static const String activeCollectionId = '67d02c35001a2eca2585';
   static const String wishlistCollectionId = '67d189520011b6e3c6dc';
   static const String reportsCollectionId = '67d2b6210010e77c49a7';
+  static const String eventCollectionId = '67d41fd100299baf6f63';
 
 
   // // Self Hosted

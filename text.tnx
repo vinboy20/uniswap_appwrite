@@ -694,7 +694,12 @@ GestureDetector(
 
 final getUser = productController.products.where((categoryId) => categoryId.catId == widget.categoryId).toList();
 
-
+ validator: (value) {
+  if (value!.isEmpty) {
+    return "Please enter a location";
+  }
+  return null;
+},
 
   Future<void> _initializeApp() async {
     // Simulate a splash screen delay (e.g., 2 seconds)

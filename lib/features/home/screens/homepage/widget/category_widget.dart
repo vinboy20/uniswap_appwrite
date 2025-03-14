@@ -4,9 +4,8 @@ import 'package:uniswap/common/widgets/image_preview_widget.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/credentials.dart';
 import 'package:uniswap/controllers/product_controller.dart';
-import 'package:uniswap/features/home/screens/home_container/home_container.dart';
-import 'package:uniswap/features/shop/event/ticket_management_screen/ticket_management_screen.dart';
 import 'package:uniswap/features/shop/screen/category_screen/category_screen.dart';
+import 'package:uniswap/features/shop/screen/ticket_category_screen/ticket_category_screen.dart';
 
 Widget categoryWidget(BuildContext context) {
   final ProductController productController = Get.put(ProductController());
@@ -26,7 +25,7 @@ Widget categoryWidget(BuildContext context) {
           height: 90.h,
           child: GestureDetector(
             onTap: () {
-              Get.to(() => TicketManagementScreen());
+              Get.to(() => TicketCategoryScreen());
             },
             child: Column(
               children: [

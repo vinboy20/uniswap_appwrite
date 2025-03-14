@@ -91,10 +91,16 @@ class ChatController extends GetxController {
         databaseId: databaseId,
         collectionId: chatCollectionId,
         queries: [
-          Query.or([
-            Query.equal('senderId', [userId]),
-            Query.equal('receiverId', [userId]),
-          ]),
+          // Query.or([
+          //   Query.equal('senderId', [userId]),
+          //   Query.equal('receiverId', [userId]),
+          // ]),
+          Query.or(
+            [
+              Query.equal("senderId", userId),
+              Query.equal("receiverId", userId),
+            ],
+          ),
         ],
       );
 

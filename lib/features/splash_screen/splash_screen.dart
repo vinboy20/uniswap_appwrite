@@ -4,11 +4,9 @@ import 'package:get_storage/get_storage.dart';
 import 'package:uniswap/controllers/appwrite_controller.dart';
 import 'package:uniswap/core/utils/credentials.dart';
 import 'package:uniswap/features/authentication/screens/create_pin/create_pin_screen.dart';
-import 'package:uniswap/features/authentication/screens/signin/sign_in_screen.dart';
 import 'package:uniswap/features/authentication/screens/signup/sign_up_screen.dart';
 import 'package:uniswap/features/home/screens/home_container/home_container.dart';
 import 'package:uniswap/features/onboarding/onboarding_screen.dart';
-import 'package:uniswap/core/utils/helpers/loaders.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

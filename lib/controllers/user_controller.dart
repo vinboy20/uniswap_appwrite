@@ -75,11 +75,10 @@ class UserController extends GetxController {
     required String report,
   }) async {
     try {
-      // Validate input
-      if (email.isEmpty || report.isEmpty) {
-        throw Exception('Email and report cannot be empty');
-      }
-
+      // // Validate input
+      // if (email.isEmpty || report.isEmpty) {
+      //   throw Exception('Email and report cannot be empty');
+      // }
       // Create a document in the reports collection
       await databases.createDocument(
         databaseId: databaseId,
@@ -91,9 +90,7 @@ class UserController extends GetxController {
           'timestamp': DateTime.now().toIso8601String(), // Add a timestamp
         },
       );
-
-      // Show success message
-      Get.snackbar('Success', 'Report submitted successfully');
+      
     } catch (e) {
       // Handle errors
       Get.snackbar('Error', 'Failed to submit report: $e');

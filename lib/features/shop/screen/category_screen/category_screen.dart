@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:uniswap/common/widgets/appbar/appbar.dart';
-import 'package:uniswap/common/widgets/button/custom_icon_button.dart';
 import 'package:uniswap/common/widgets/image_preview_widget.dart';
+import 'package:uniswap/common/widgets/liked.dart';
 import 'package:uniswap/common/widgets/search/search_button_field.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/credentials.dart';
@@ -23,8 +23,7 @@ class CategoryScreen extends StatefulWidget {
 
 class _CategoryScreenState extends State<CategoryScreen> {
   final ProductController productController = Get.put(ProductController());
-  final Map<int, bool> likedProducts = {};
-
+ 
   @override
   Widget build(BuildContext context) {
     final allProduct = productController.products.where((categoryId) => categoryId.catId == widget.categoryId).toList();
@@ -111,25 +110,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                         fallbackWidth: double.maxFinite,
                                         color: Colors.grey,
                                       ),
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 8.h, right: 10.w),
-                                      child: CustomIconButton(
-                                        onTap: () {
-                                          setState(() {
-                                            likedProducts[index] = !(likedProducts[index] ?? false);
-                                          });
-                                        },
-                                        height: 25.h,
-                                        width: 25.w,
-                                        decoration: IconButtonStyleHelper.fillTeal,
-                                        alignment: Alignment.topRight,
-                                        child: Icon(
-                                          Icons.favorite_sharp,
-                                          size: 18.sp,
-                                          color: likedProducts[index] == true ? const Color(0xFFE11D48) : Colors.grey,
-                                        ),
-                                      ),
-                                    ),
+                                     Liked(itemId: product.docId.toString()),
                                   ],
                                 ),
                               ),
@@ -201,6 +182,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
       ),
     );
   }
+
 }
 
 

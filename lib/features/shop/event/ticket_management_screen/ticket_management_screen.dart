@@ -1,9 +1,12 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:uniswap/common/widgets/form/custom_search_view.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/features/home/screens/home_container/widgets/drawer_widget.dart';
 import 'package:uniswap/features/shop/event/ticket_management_screen/widgets/productcard3_item_widget.dart';
+import 'package:uniswap/features/shop/event/ticket_screen/ticket_screen.dart';
+import 'package:uniswap/features/shop/event/ticket_upload_screen/ticket_upload_screen.dart';
 
 class TicketManagementScreen extends StatefulWidget {
   const TicketManagementScreen({super.key});
@@ -15,9 +18,9 @@ class TicketManagementScreen extends StatefulWidget {
 class _TicketManagementScreenState extends State<TicketManagementScreen> with TickerProviderStateMixin {
   late TabController tabviewController;
   GlobalKey<NavigatorState> navigatorKey = GlobalKey();
-  final List<String> items = [
-    'Sell Ticket',
-    'Upcoming',
+  final List<Map<String, dynamic>> items = [
+    {'label': 'Sell Ticket', 'route': () => TicketUploadScreen()},
+    {'label': 'Upcoming', 'route': () => TicketScreen()},
   ];
   String? selectedValue;
   @override
@@ -31,7 +34,7 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> with Ti
     return SafeArea(
       child: Scaffold(
         appBar: _buildAppBar(context),
-         drawer: Drawer(
+        drawer: Drawer(
           width: 271.w,
           child: DrawerWidget(),
         ),
@@ -108,7 +111,10 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> with Ti
         },
       ),
       centerTitle: true,
-      title: Text("Manage Events", style: CustomTextStyles.text14wbold,),
+      title: Text(
+        "Manage Events",
+        style: CustomTextStyles.text14wbold,
+      ),
       actions: [
         Container(
           margin: EdgeInsets.only(right: 10.h),
@@ -123,10 +129,10 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> with Ti
                 overflow: TextOverflow.ellipsis,
               ),
               items: items
-                  .map((String item) => DropdownMenuItem<String>(
-                        value: item,
+                  .map((item) => DropdownMenuItem<String>(
+                        value: item['label'],
                         child: Text(
-                          item,
+                          item['label']!,
                           style: CustomTextStyles.text12w400.copyWith(
                             height: 1.43,
                           ),
@@ -139,6 +145,10 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> with Ti
                 setState(() {
                   selectedValue = value;
                 });
+
+                
+              final selectedItem = items.firstWhere((e) => e['label'] == value);
+              Get.to(selectedItem['route']);
               },
               buttonStyleData: ButtonStyleData(
                 height: 34.h,
@@ -159,7 +169,6 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> with Ti
               ),
               dropdownStyleData: DropdownStyleData(
                 maxHeight: 200,
-                // width: 200,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),
@@ -167,7 +176,6 @@ class _TicketManagementScreenState extends State<TicketManagementScreen> with Ti
                   ),
                   color: Colors.white,
                 ),
-                //offset: const Offset(0, 0),
                 scrollbarTheme: ScrollbarThemeData(
                   radius: const Radius.circular(40),
                   thickness: WidgetStateProperty.all(6),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/constraints/colors.dart';
 import 'package:uniswap/core/utils/constraints/sizes.dart';
 import 'package:uniswap/theme/theme_helper.dart';
@@ -33,6 +34,15 @@ class CustomTextStyles {
 
   static get labelLargeGray10002 => theme.textTheme.labelLarge!.copyWith(
         color: appTheme.gray10002,
+      );
+
+  static get titleMediumGray900 => theme.textTheme.titleMedium!.copyWith(
+        color: appTheme.gray900,
+      );
+
+       static get titleMediumGray90018 => theme.textTheme.titleMedium!.copyWith(
+        color: appTheme.gray900,
+        fontSize: 18.sp,
       );
 
   static TextStyle text14w400 = TextStyle(
@@ -86,6 +96,12 @@ class CustomTextStyles {
 
   static TextStyle text14w600c0F = TextStyle(
     fontSize: TSizes.fontSizeSm,
+    fontFamily: "Inter",
+    fontWeight: FontWeight.w600,
+    color: const Color(0xFF0F172A),
+  );
+  static TextStyle text12w600c0F = TextStyle(
+    fontSize: TSizes.fontSizeXs,
     fontFamily: "Inter",
     fontWeight: FontWeight.w600,
     color: const Color(0xFF0F172A),
