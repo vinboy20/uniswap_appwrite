@@ -51,6 +51,18 @@ class CustomTextStyles {
     fontWeight: FontWeight.w400,
     color: const Color(0xFF334155),
   );
+  static TextStyle text14w600c47 = TextStyle(
+    fontSize: TSizes.fontSizeSm,
+    fontFamily: "Inter",
+    fontWeight: FontWeight.w600,
+    color: const Color(0xFF475569),
+  );
+  static TextStyle text12w600c47 = TextStyle(
+    fontSize: TSizes.fontSizeXs,
+    fontFamily: "Inter",
+    fontWeight: FontWeight.w600,
+    color: const Color(0xFF475569),
+  );
 
   static TextStyle text14wbold = TextStyle(
     fontSize: TSizes.fontSizeSm,
@@ -173,6 +185,12 @@ class CustomTextStyles {
     fontWeight: FontWeight.w700,
     color: TColors.primary,
   );
+  static TextStyle text18w600c19 = TextStyle(
+    fontSize: TSizes.fontSizeLg,
+    fontFamily: "Inter",
+    fontWeight: FontWeight.w600,
+    color: Color(0xFF19191B),
+  );
   static TextStyle text18w600cPrimary = TextStyle(
     fontSize: TSizes.fontSizeLg,
     fontFamily: "Inter",
@@ -197,6 +215,12 @@ class CustomTextStyles {
     fontSize: TSizes.fontSizeSm,
     fontFamily: "Inter",
     fontWeight: FontWeight.w400,
+    color: const Color(0xFF3FA2F7),
+  );
+  static TextStyle text14w600cBlue = TextStyle(
+    fontSize: TSizes.fontSizeSm,
+    fontFamily: "Inter",
+    fontWeight: FontWeight.w600,
     color: const Color(0xFF3FA2F7),
   );
 

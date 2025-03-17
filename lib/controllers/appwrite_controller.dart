@@ -1,7 +1,10 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:uniswap/core/utils/credentials.dart';
+import 'package:uniswap/core/utils/helpers/loaders.dart';
+import 'package:uniswap/core/utils/helpers/network_manager.dart';
 import 'package:uniswap/models/user.dart';
 
 class AppwriteController extends GetxController {
@@ -47,7 +50,23 @@ class AppwriteController extends GetxController {
   //   }
   // }
 
+  final Connectivity _connectivity = Connectivity();
+
+  Future<bool> _checkInternetConnection() async {
+    var connectivityResult = await _connectivity.checkConnectivity();
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
+      return true; // Connected to the internet
+    } else {
+      return false; // No internet connection
+    }
+  }
+
   Future<String?> getCurrentUserId() async {
+    if (!await NetworkManager.instance.isConnected()) {
+    TLoaders.customToast(message: 'No internet connection');
+    return null;
+  }
   try {
     final userData = await account.get();
     user.value = UserModel.fromJson(userData.toMap()); // Update reactive user

@@ -179,7 +179,9 @@ class _TicketScreenState extends State<TicketScreen> {
                           ),
                         );
                       },
+                    
                     ),
+                  
                   ),
 
                   SizedBox(height: 19.h),
@@ -188,6 +190,7 @@ class _TicketScreenState extends State<TicketScreen> {
             );
           }
         }),
+      
       ),
     );
   }

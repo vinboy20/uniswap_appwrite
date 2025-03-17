@@ -2,8 +2,6 @@ import 'package:get/get.dart';
 import 'package:appwrite/appwrite.dart';
 import 'package:uniswap/core/utils/credentials.dart';
 import 'package:uniswap/models/event_model.dart';
-import 'package:uniswap/models/product_model.dart';
-
 class TicketController extends GetxController {
   final Databases _databases = Databases(Get.find<Client>());
   final Storage _storage = Storage(Get.find<Client>());
@@ -45,6 +43,24 @@ class TicketController extends GetxController {
       print('Error fetching Event: $e');
     } finally {
       isLoading(false);
+    }
+  }
+
+   Future<List<EventModel>> searchEvent(String query) async {
+    try {
+      final response = await _databases.listDocuments(
+        databaseId: databaseId,
+        collectionId: eventCollectionId,
+        queries: [
+          Query.search('name', query), // Searching by product name
+        ],
+      );
+
+      // Convert documents to ProductModel
+      return response.documents.map((doc) => EventModel.fromJson(doc.data)).toList();
+    } catch (e) {
+      print('Search Error: $e');
+      return [];
     }
   }
 }

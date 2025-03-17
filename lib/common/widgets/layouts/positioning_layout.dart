@@ -20,8 +20,8 @@ class PositioningLayout extends StatelessWidget {
               opacity: 0.5,
               child: CustomImageView(
                 imagePath: TImages.topImage,
-                height: 183,
-                width: 162,
+                height: 183.h,
+                width: 162.w,
               ),
             ),
           ),
@@ -36,8 +36,8 @@ class PositioningLayout extends StatelessWidget {
               opacity: 0.5,
               child: CustomImageView(
                 imagePath: TImages.bottomImage,
-                height: 114,
-                width: 98,
+                height: 114.h,
+                width: 98.w,
               ),
             ),
           ),

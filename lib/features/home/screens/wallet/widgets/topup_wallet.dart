@@ -171,6 +171,7 @@ class _TopupWalletState extends State<TopupWallet> {
                 height: 38.h,
                 text: "Top-up Wallet",
                 buttonStyle: CustomButtonStyles.fillCyanTL7,
+                buttonTextStyle: CustomTextStyles.text14wbold
               ),
               SizedBox(height: 21.h),
               CustomOutlinedButton(

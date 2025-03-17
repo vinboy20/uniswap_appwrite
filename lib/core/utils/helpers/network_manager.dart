@@ -4,46 +4,59 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:uniswap/core/utils/helpers/loaders.dart';
 
-
 class NetworkManager extends GetxController {
   static NetworkManager get instance => Get.find();
 
   final Connectivity _connectivity = Connectivity();
-  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
   final Rx<ConnectivityResult> _connectionStatus = ConnectivityResult.none.obs;
 
+  /// Getter to access the current connection status
+  ConnectivityResult get connectionStatus => _connectionStatus.value;
 
-  ///initialize the network manager and set up a stream to continually check the connection status
+  /// Initialize the network manager and set up a stream to continually check the connection status
   @override
   void onInit() {
     super.onInit();
-   // _connectivitySubscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    _initConnectivity();
+    _connectivitySubscription = _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
   }
 
-  ///update connection status based on changes in connectivity and show a relevant popup for no internet Connection
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    _connectionStatus.value = result;
-    if(_connectionStatus.value == ConnectivityResult.none) {
+  /// Initialize connectivity and set the initial connection status
+  Future<void> _initConnectivity() async {
+    try {
+      final List<ConnectivityResult> result = await _connectivity.checkConnectivity();
+      _updateConnectionStatus(result);
+    } on PlatformException catch (e) {
+      print("Error checking connectivity: $e");
+      _connectionStatus.value = ConnectivityResult.none;
+    }
+  }
+
+  /// Update connection status based on changes in connectivity and show a relevant popup for no internet connection
+  void _updateConnectionStatus(List<ConnectivityResult> results) {
+    // Check if any of the results indicate a connection
+    if (results.contains(ConnectivityResult.mobile) || results.contains(ConnectivityResult.wifi)) {
+      _connectionStatus.value = ConnectivityResult.mobile; // or ConnectivityResult.wifi
+      TLoaders.customToast(message: 'Internet connection restored');
+    } else {
+      _connectionStatus.value = ConnectivityResult.none;
       TLoaders.customToast(message: 'No internet connection');
     }
   }
 
-  ///check the internet connection status
-  Future<bool> isConnected() async{
-    try{
-      final result  = await _connectivity.checkConnectivity();
-      if(result == ConnectivityResult.none) {
-        return false;
-      }else {
-        return true;
-      }
-    } on PlatformException catch(_) {
+  /// Check the internet connection status
+  Future<bool> isConnected() async {
+    try {
+      final List<ConnectivityResult> result = await _connectivity.checkConnectivity();
+      return result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi);
+    } on PlatformException catch (e) {
+      print("Error checking connectivity: $e");
       return false;
     }
   }
 
-
-  ///dispose or close the active connectivity stream
+  /// Dispose or close the active connectivity stream
   @override
   void onClose() {
     super.onClose();

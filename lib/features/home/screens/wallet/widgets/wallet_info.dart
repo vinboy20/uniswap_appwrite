@@ -55,7 +55,7 @@ class _WalletInfoState extends State<WalletInfo> {
                         color: const Color(0xFFFFFFFF),
                         shape: RoundedRectangleBorder(
                           side: const BorderSide(width: 1, color: Color(0xFFE2E8F0)),
-                          borderRadius: BorderRadius.circular(50),
+                          borderRadius: BorderRadius.circular(50.w),
                         ),
                       ),
                       child: IconButton(
@@ -136,9 +136,9 @@ class _WalletInfoState extends State<WalletInfo> {
                             child: Column(
                               children: [
                                 CustomIconButton(
-                                  height: 56.h,
-                                  width: 56.h,
-                                  padding: EdgeInsets.all(18.w),
+                                  height: 46.h,
+                                  width: 46.h,
+                                  padding: EdgeInsets.all(12.w),
                                   decoration: IconButtonStyleHelper.fillBlueGrayTL28,
                                   child: CustomImageView(
                                     imagePath: TImages.arrowDown,
@@ -167,11 +167,11 @@ class _WalletInfoState extends State<WalletInfo> {
                             child: Column(
                               children: [
                                 CustomIconButton(
-                                  height: 56.h,
-                                  width: 56.h,
-                                  padding: const EdgeInsets.all(15),
+                                  height: 46.h,
+                                  width: 46.h,
+                                  // padding: const EdgeInsets.all(15),
                                   decoration: IconButtonStyleHelper.fillBlueGrayTL28,
-                                  child: Icon(Icons.vertical_align_top_sharp, color: const Color(0xFFFF9300), size: 24.sp),
+                                  child: Icon(Icons.vertical_align_top_sharp, color: const Color(0xFFFF9300), size: 20.sp),
                                 ),
                                 SizedBox(height: 8.h),
                                 Text(

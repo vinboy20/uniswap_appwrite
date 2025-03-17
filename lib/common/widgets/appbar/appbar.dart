@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:uniswap/core/utils/constraints/colors.dart';
 import 'package:uniswap/core/utils/device/device_utility.dart';
-import 'package:uniswap/core/utils/helpers/helper_functions.dart';
+import 'package:uniswap/core/utils/size_utils.dart';
 
 class TAppBar extends StatelessWidget implements PreferredSizeWidget {
   const TAppBar({super.key, this.title, this.showBackArrow = false, this.leadingIcon, this.actions, this.leadingOnPressed});
@@ -16,14 +16,13 @@ class TAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = THelperFunctions.isDarkMode(context);
     return AppBar(
       automaticallyImplyLeading: false,
       leading: showBackArrow
           ? IconButton(
               onPressed: () => Get.back(),
-              color: dark ? TColors.white : TColors.dark,
-              icon: const Icon(Iconsax.arrow_left),
+              color: TColors.black,
+              icon: Icon(Iconsax.arrow_left, size: 25.sp),
             )
           : leadingIcon != null
               ? IconButton(

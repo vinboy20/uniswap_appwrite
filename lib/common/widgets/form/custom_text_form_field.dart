@@ -117,32 +117,22 @@ class CustomTextFormField extends StatelessWidget {
         suffixIcon: suffix,
         suffixIconConstraints: suffixConstraints,
         isDense: true,
-        contentPadding: contentPadding ??
-            EdgeInsets.symmetric(
-              horizontal: 12.w,
-              vertical: 16.h,
-            ),
+        contentPadding: contentPadding ?? EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
         fillColor: fillColor,
         filled: filled,
         border: borderDecoration ??
             OutlineInputBorder(
-              borderSide: BorderSide(
-                color: TColors.darkGrey,
-                width: 1.h,
-              ),
+              borderSide: BorderSide(color: TColors.darkGrey, width: 1.h),
             ),
         enabledBorder: borderDecoration ??
             OutlineInputBorder(
-              borderSide: BorderSide(
-                color: TColors.darkGrey,
-                width: 1.h,
-              ),
+              borderSide: BorderSide(color: TColors.cyan, width: 1.h),
             ),
         focusedBorder: borderDecoration ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(7.w),
               borderSide: BorderSide(
-                // color: appTheme.cyan200,
+                color: appTheme.cyan200,
                 width: 1.h,
               ),
             ),
@@ -157,6 +147,14 @@ extension TextFormFieldStyleHelper on CustomTextFormField {
           color: TColors.gray200,
           width: 1,
         ),
+      );
+  static OutlineInputBorder get outlinecyan => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: TColors.cyan,
+          width: 1,
+        ),
+        
       );
   static OutlineInputBorder get outlineOnError => OutlineInputBorder(
         borderRadius: BorderRadius.circular(25),

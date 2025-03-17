@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:uniswap/controllers/appwrite_controller.dart';
 import 'package:uniswap/core/utils/credentials.dart';
+import 'package:uniswap/core/utils/helpers/network_manager.dart'; // Import NetworkManager
 import 'package:uniswap/features/authentication/screens/create_pin/create_pin_screen.dart';
 import 'package:uniswap/features/authentication/screens/signup/sign_up_screen.dart';
 import 'package:uniswap/features/home/screens/home_container/home_container.dart';
@@ -17,6 +18,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   final AppwriteController appwriteController = Get.find<AppwriteController>();
+  final NetworkManager networkManager = Get.find<NetworkManager>(); // Inject NetworkManager
   final GetStorage box = GetStorage();
 
   @override
@@ -28,6 +30,14 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _initializeApp() async {
     await Future.delayed(const Duration(seconds: 2)); // Simulate a splash screen delay
 
+    // Check internet connectivity
+    if (!await networkManager.isConnected()) {
+      // Show a persistent dialog for no internet connection
+      _showNoInternetDialog();
+      return;
+    }
+
+    // Proceed with app initialization
     final bool isFirstTime = box.read('isFirstTime') ?? true;
     if (isFirstTime) {
       box.write('isFirstTime', false);
@@ -50,6 +60,28 @@ class _SplashScreenState extends State<SplashScreen> {
         Get.offAll(() => const SignUpScreen());
       }
     }
+  }
+
+  void _showNoInternetDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent closing the dialog by tapping outside
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('No Internet Connection'),
+          content: const Text('Please check your internet connection and try again.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                _initializeApp(); // Retry initialization
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

@@ -4,19 +4,18 @@ import 'package:uniswap/common/widgets/image_preview_widget.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/credentials.dart';
 import 'package:uniswap/controllers/product_controller.dart';
+import 'package:uniswap/features/shop/event/ticket_screen/ticket_screen.dart';
 import 'package:uniswap/features/shop/screen/category_screen/category_screen.dart';
-import 'package:uniswap/features/shop/screen/ticket_category_screen/ticket_category_screen.dart';
 
 Widget categoryWidget(BuildContext context) {
   final ProductController productController = Get.put(ProductController());
   return Obx(() {
     if (productController.isLoading.value) {
       return const Center(child: CircularProgressIndicator());
-    }
-    if (productController.categories.isEmpty) {
+    } else if (productController.categories.isEmpty) {
       return const Center(child: Text('No categories available.'));
-    }
-    return Row( 
+    } else {
+      return Row( 
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -25,7 +24,7 @@ Widget categoryWidget(BuildContext context) {
           height: 90.h,
           child: GestureDetector(
             onTap: () {
-              Get.to(() => TicketCategoryScreen());
+              Get.to(() => TicketScreen());
             },
             child: Column(
               children: [
@@ -90,5 +89,7 @@ Widget categoryWidget(BuildContext context) {
         ),
       ],
     );
+  
+    }
   });
 }
