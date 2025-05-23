@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uniswap/common/widgets/button/custom_elevated_button.dart';
 import 'package:uniswap/common/widgets/layouts/positioning_layout.dart';
+import 'package:uniswap/controllers/product_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/theme/custom_button_style.dart';
 
@@ -10,6 +11,7 @@ class WithdrawalSucessfulScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     final ProductController productController = Get.find<ProductController>();
     return PositioningLayout(
       child: Container(
         height: 342.h,
@@ -67,6 +69,7 @@ class WithdrawalSucessfulScreen extends StatelessWidget {
           SizedBox(height: 24.h),
           CustomElevatedButton(
             onPressed: () async {
+              // Refresh wallet data
               Get.back();
             },
             height: 38.h,

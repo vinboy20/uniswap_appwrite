@@ -13,7 +13,9 @@ import 'package:uniswap/controllers/user_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/credentials.dart';
 import 'package:uniswap/core/utils/helpers/loaders.dart';
+import 'package:uniswap/data/saved_data.dart';
 import 'package:uniswap/features/personalization/screen/profile_screen/profile_screen.dart';
+import 'package:uniswap/features/shop/screen/escrow_request_screen/escrow_request_screen.dart';
 import 'package:uniswap/models/user.dart';
 import 'package:uniswap/controllers/product_controller.dart';
 import 'package:uniswap/models/product_model.dart';
@@ -39,14 +41,13 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
   int sliderIndex = 0;
 
   bool? isBid;
-   
 
   @override
   void initState() {
     super.initState();
     // Fetch user details when the screen is initialized
     _fetchUserDetails();
-   
+    print(_userDetails);
   }
 
   void shareContent() {
@@ -59,7 +60,7 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
 
   Future<void> _fetchUserDetails() async {
     try {
-      final user = await userController.getUserById(widget.product.userId);
+      final user = await userController.getUserById(widget.product.userId ?? '');
       setState(() {
         _userDetails = user;
       });
@@ -70,8 +71,6 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
       );
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -115,13 +114,29 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                     ),
                     itemCount: images?.length,
                     itemBuilder: (context, index, realIndex) {
-                      return FilePreviewImage(
-                        bucketId: Credentials.productBucketId,
-                        fileId: images?[index],
+                      // return FilePreviewImage(
+                      //   bucketId: Credentials.productBucketId,
+                      //   fileId: images?[index],
+                      //   width: double.maxFinite,
+                      //   height: 241.h,
+                      //   isCircular: false,
+                      //   imageborderRadius: BorderRadius.zero,
+                      // );
+                      return Image.network(
+                        "${Credentials.imageApiEndpoint}/storage/buckets/${Credentials.productBucketId}/files/${images?[index]}/view?project=${Credentials.projectID}&mode=admin",
+                        headers: {"Origin": "*"}, // Add this line
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return TShimmerEffect(
+                            width: double.maxFinite,
+                            height: 241.h,
+                            // radius: borderRadius,
+                          );
+                        },
                         width: double.maxFinite,
                         height: 241.h,
-                        isCircular: false,
-                        imageborderRadius: BorderRadius.zero,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
                       );
                     },
                   ),
@@ -171,9 +186,7 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                           style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
                         ),
                         collapsedTitleBackgroundColor: Colors.transparent,
-                        content: (widget.product.moreSpec == null || widget.product.moreSpec!.isEmpty)
-                            ? 'No spec available'
-                            : widget.product.moreSpec.toString(),
+                        content: (widget.product.moreSpec == null || widget.product.moreSpec!.isEmpty) ? 'No spec available' : widget.product.moreSpec.toString(),
                         collapsedIcon: Icon(
                           Icons.keyboard_arrow_down,
                           size: 16.sp,
@@ -227,12 +240,36 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                                   spacing: 8,
                                   children: [
                                     _userDetails!.photo.toString().isNotEmpty
-                                        ? FilePreviewImage(
+                                        ?
+                                        // FilePreviewImage(
+                                        //     bucketId: Credentials.userBucketId,
+                                        //     fileId: _userDetails!.photo.toString(),
+                                        //     width: 52.w,
+                                        //     height: 52.h,
+                                        //     isCircular: true,
+                                        //   )
+                                        // Image.network(
+                                        //     "${Credentials.imageApiEndpoint}/storage/buckets/${Credentials.productBucketId}/files/${_userDetails!.photo ?? ''}/view?project=${Credentials.projectID}&mode=admin",
+                                        //     headers: {"Origin": "*"}, // Add this line
+                                        //     loadingBuilder: (context, child, loadingProgress) {
+                                        //       if (loadingProgress == null) return child;
+                                        //       return TShimmerEffect(
+                                        //        height: 52.h,
+                                        //         width: 52.w,
+                                        //         // radius: borderRadius,
+                                        //       );
+                                        //     },
+                                        //     height: 52.h,
+                                        //     width: 52.w,
+                                        //     fit: BoxFit.cover,
+                                        //     errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+                                        //   )
+
+                                        FilePreviewImage(
                                             bucketId: Credentials.userBucketId,
-                                            fileId: _userDetails!.photo.toString(),
-                                            width: 52.w,
+                                            fileId: _userDetails!.photo ?? '',
                                             height: 52.h,
-                                            isCircular: true,
+                                            width: 52.w,
                                           )
                                         : CustomImageView(
                                             imagePath: _userDetails!.avatar, // Default profile image
@@ -295,22 +332,31 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                               ],
                             ),
                           ],
-                        )
-                      else
-                        Center(
-                          child: TShimmerEffect(
-                            width: double.maxFinite,
-                            height: 100.h,
-                          ), // Show a loader while fetching user details
                         ),
+                      // else
+                      //   Center(
+                      //     child: TShimmerEffect(
+                      //       width: double.maxFinite,
+                      //       height: 100.h,
+                      //     ), // Show a loader while fetching user details
+                      //   ),
                       SizedBox(height: 32.h),
-                      if (widget.product.isBid != true)
+                      if (widget.product.isBid != true && widget.product.userId != SavedData.getUserId())
                         CustomOutlinedButton(
                           text: "Make Payment",
                           buttonStyle: TAppDecoration.softDark,
                           buttonTextStyle: CustomTextStyles.text14w400cPrimary,
-                          onPressed: () {
-                            // Navigator.pushNamed(context, AppRoutes.bidScreen);
+                          onPressed: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) => SimpleDialog(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadiusStyle.roundedBorder10),
+                                alignment: Alignment.center,
+                                contentPadding: EdgeInsets.zero,
+                                backgroundColor: const Color(0xFFFFFFFF),
+                                children: [EscrowRequestScreen(price: widget.product.startPrice, productId: widget.product.docId.toString(), sellerId: _userDetails!.docId)],
+                              ),
+                            );
                           },
                         )
                       else

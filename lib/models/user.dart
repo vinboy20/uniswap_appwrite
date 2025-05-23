@@ -6,18 +6,19 @@ class UserModel {
   String? avatar;
   String? userId;
   String? address;
-  String? lat;
-  String? long;
   // String? country;
   String? pincode;
   String? phone;
-  bool? biometric = false;
-  bool? basicProgress = false;
-  bool? isValidated = false;
+  bool? biometric;
+  bool? basicProgress;
+  bool? isValidated;
   String? dob;
   String? gender;
   String? bio;
   String? link;
+  // String? bankCode;
+  // String? bankName;
+  // String? accountNumber;
 
   UserModel({
     this.docId,
@@ -27,8 +28,6 @@ class UserModel {
     this.avatar,
     this.userId,
     this.address,
-    this.lat,
-    this.long,
     this.phone,
     this.pincode,
     this.basicProgress,
@@ -38,6 +37,9 @@ class UserModel {
     this.gender,
     this.bio,
     this.link,
+    // this.bankCode,
+    // this.bankName,
+    // this.accountNumber,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -49,8 +51,6 @@ class UserModel {
     userId = json['userId'];
     pincode = json['pincode'];
     phone = json['phone'];
-    lat = json['lat'];
-    long = json['long'];
     address = json['address'];
     basicProgress = json['basicProgress'];
     isValidated = json['isValidated'];
@@ -59,6 +59,9 @@ class UserModel {
     gender = json['gender'];
     bio = json['bio'];
     link = json['link'];
+    // bankCode = json['bankCode'];
+    // bankName = json['bankName'];
+    // accountNumber = json['accountNumber'];
   }
 
   // Factory constructor for creating an empty UserModel
@@ -78,14 +81,12 @@ class UserModel {
       isValidated: false,
       dob: '',
       gender: '',
-      lat: "",
-      long: '',
       bio: "",
       link: "",
     );
   }
 
-  Map<String, dynamic> toJson() {
+ Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['name'] = name;
     data['email'] = email;
@@ -94,16 +95,15 @@ class UserModel {
     data['userId'] = userId;
     data['pincode'] = pincode;
     data['phone'] = phone;
-    data['lat'] = lat;
-    data['long'] = long;
     data['address'] = address;
-    data['basicProgress'] = basicProgress;
-    data['isValidated'] = isValidated;
-    data['biometric'] = biometric;
+    data['basicProgress'] = basicProgress ?? false;
+    data['isValidated'] = isValidated ?? false;
+    data['biometric'] = biometric ?? false;
     data['dob'] = dob;
     data['gender'] = gender;
     data['bio'] = bio;
     data['link'] = link;
     return data;
   }
+
 }

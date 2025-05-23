@@ -229,7 +229,7 @@ class _TicketUploadScreenState extends State<TicketUploadScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         appBar: TAppBar(
           showBackArrow: true,
           title: Text(

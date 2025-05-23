@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uniswap/common/widgets/button/custom_elevated_button.dart';
 import 'package:uniswap/common/widgets/layouts/positioning_layout.dart';
 import 'package:uniswap/core/app_export.dart';
+import 'package:uniswap/core/utils/helpers/loaders.dart';
+import 'package:uniswap/features/shop/screen/escrow_screen.dart';
 import 'package:uniswap/theme/custom_button_style.dart';
 
 class EscrowRequestScreen extends StatefulWidget {
-  const EscrowRequestScreen({super.key});
+  const EscrowRequestScreen({super.key, this.price, this.productId, this.sellerId});
+
+  final String? price;
+  final String? productId;
+  final String? sellerId;
 
   @override
   State<EscrowRequestScreen> createState() => _EscrowRequestScreenState();
 }
 
 class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
-  dynamic groupValue;
+  dynamic exchangeValue;
+  dynamic locationValue;
+  String? delieveryTime;
+  String? delieveryDate;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +35,7 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
           borderRadius: BorderRadiusStyle.roundedBorder10,
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 18.h),
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,8 +60,8 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
                     ),
                   ),
                   SizedBox(height: 8.h),
-                  _buildRadio(context, title: "Direct", value: 0),
-                  _buildRadio(context, title: "Delievery Service", value: 1),
+                  _exchangeRadio(context, title: "Direct", value: "direct"),
+                  _exchangeRadio(context, title: "Delievery Service", value: "delievery Service"),
                 ],
               ),
               SizedBox(height: 18.h),
@@ -65,8 +75,8 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
                       style: CustomTextStyles.text14wboldc19,
                     ),
                   ),
-                  _buildRadio(context, title: "In-campus", value: 2),
-                  _buildRadio(context, title: "Off-campus", value: 3),
+                  _locationRadio(context, title: "In-campus", value: "in-campus"),
+                  _locationRadio(context, title: "Off-campus", value: "off-campus"),
                 ],
               ),
               SizedBox(height: 18.h),
@@ -81,14 +91,45 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
               SizedBox(height: 18.h),
               //Confirm button
               CustomElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  print(exchangeValue);
+                  print(locationValue);
+                  print(widget.sellerId);
+                  if (locationValue == null || exchangeValue == null || delieveryTime == null || delieveryDate == null) {
+                    TLoaders.warningSnackBar(title: "Warning", message: "Please fill all required fields.");
+                    return;
+                  } else {
+                    Navigator.pop(context);
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) => SimpleDialog(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadiusStyle.roundedBorder10),
+                        alignment: Alignment.center,
+                        contentPadding: EdgeInsets.zero,
+                        backgroundColor: const Color(0xFFFFFFFF),
+                        children: [
+                          EscrowScreen(
+                            price: widget.price,
+                            productId: widget.productId, 
+                            exchange:exchangeValue, 
+                            location: locationValue, 
+                            delieveryTime: delieveryTime, 
+                            delieveryDate: delieveryDate,
+                            sellerId: widget.sellerId
+                          ),
+                        ],
+                        // EscrowScreen(price: widget.price, delieveryTime: delieveryTime, delieveryDate: delieveryDate),
+                      ),
+                    );
+                  }
+                },
                 height: 38.h,
                 //width: 156.w,
                 text: "Confirm",
                 buttonStyle: CustomButtonStyles.fillCyan,
                 buttonTextStyle: CustomTextStyles.text14wboldc19,
               ),
-              SizedBox(height: 24.h),
+              SizedBox(height: 34.h),
             ],
           ),
         ),
@@ -97,24 +138,52 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
   }
 
   /// Common widget
-  Widget _buildRadio(
+  Widget _exchangeRadio(
     BuildContext context, {
     required String title,
-    required int value,
+    required String value,
   }) {
     return Row(
       children: [
         Radio(
           activeColor: const Color(0xFF5DE3D0),
           value: value,
-          groupValue: groupValue,
+          groupValue: exchangeValue,
           onChanged: (value) {
             setState(() {
-              groupValue = value;
+              exchangeValue = value;
             });
           },
         ),
-        Text(title),
+        Text(
+          title,
+          style: TextStyle(color: Color(0xFF0F172A), fontSize: 14.sp, fontWeight: FontWeight.w400),
+        ),
+      ],
+    );
+  }
+
+  Widget _locationRadio(
+    BuildContext context, {
+    required String title,
+    required String value,
+  }) {
+    return Row(
+      children: [
+        Radio(
+          activeColor: const Color(0xFF5DE3D0),
+          value: value,
+          groupValue: locationValue,
+          onChanged: (value) {
+            setState(() {
+              locationValue = value;
+            });
+          },
+        ),
+        Text(
+          title,
+          style: TextStyle(color: Color(0xFF0F172A), fontSize: 14.sp, fontWeight: FontWeight.w400),
+        ),
       ],
     );
   }
@@ -126,16 +195,22 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
       children: [
         Text(
           "Delievery date",
-          style: CustomTextStyles.text16w400,
+          style: CustomTextStyles.text14w400,
         ),
         SizedBox(height: 5.h),
         GestureDetector(
-          onTap: () {
-            showDatePicker(
+          onTap: () async {
+            final DateTime? pickedDate = await showDatePicker(
               context: context,
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2030),
+              initialDate: DateTime.now(),
+              firstDate: DateTime.now(),
+              lastDate: DateTime(2101),
             );
+            if (pickedDate != null) {
+              setState(() {
+                delieveryDate = DateFormat('dd/MM/yyyy').format(pickedDate);
+              });
+            }
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 12.h),
@@ -156,8 +231,8 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 6.w),
                   child: Text(
-                    "24/09/1994",
-                    style: CustomTextStyles.text14w400,
+                    delieveryDate ?? "Select date",
+                    style: CustomTextStyles.text12w400,
                   ),
                 ),
               ],
@@ -175,12 +250,20 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
       children: [
         Text(
           "Delievery time",
-          style: CustomTextStyles.text16w400,
+          style: CustomTextStyles.text14w400,
         ),
         SizedBox(height: 5.h),
         GestureDetector(
-          onTap: () {
-            showTimePicker(context: context, initialTime: const TimeOfDay(hour: 12, minute: 00));
+          onTap: () async {
+            final TimeOfDay? pickedTime = await showTimePicker(
+              context: context,
+              initialTime: TimeOfDay.now(),
+            );
+            if (pickedTime != null) {
+              setState(() {
+                delieveryTime = pickedTime.format(context);
+              });
+            }
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 12.h),
@@ -201,8 +284,8 @@ class _EscrowRequestScreenState extends State<EscrowRequestScreen> {
                 Padding(
                   padding: EdgeInsets.only(left: 6.w),
                   child: Text(
-                    "24/09/1994",
-                    style: CustomTextStyles.text14w400,
+                    delieveryTime ?? "select time",
+                    style: CustomTextStyles.text12w400,
                   ),
                 ),
               ],

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:uniswap/common/widgets/appbar/appbar.dart';
 import 'package:uniswap/common/widgets/button/custom_pill_button.dart';
 import 'package:uniswap/common/widgets/form/custom_text_form_field.dart';
-import 'package:uniswap/common/widgets/image_picker_widget.dart';
 import 'package:uniswap/controllers/auth_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/features/authentication/screens/nin_screen/nin_screen.dart';
@@ -21,26 +19,7 @@ class _BvnScreenState extends State<BvnScreen> {
 
   final controller = Get.put(AuthController());
 
-  Future<void> localImagePicker() async {
-    final ImagePicker imagePicker = ImagePicker();
-    await THelperFunctions.imagePickerDialog(
-      context: context,
-      cameraFCT: () async {
-       controller.pickedImage = await imagePicker.pickImage(source: ImageSource.camera);
-        setState(() {});
-      },
-      galleryFCT: () async {
-        controller.pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
-        setState(() {});
-      },
-      removeFCT: () {
-        setState(() {
-         controller.pickedImage = null;
-        });
-      },
-    );
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -109,20 +88,7 @@ class _BvnScreenState extends State<BvnScreen> {
                 ),
               ),
 
-              SizedBox(height: 4.h),
-
-              // Image Picker
-              PickImageWidget(
-                pickedImage: controller.pickedImage,
-                function: () async {
-                  await localImagePicker();
-                },
-              ),
-              SizedBox(height: 18.h),
-              Text(
-                "Upload picture",
-                style: CustomTextStyles.text16w400,
-              ),
+             
               SizedBox(height: TSizes.spaceBtwSections),
               Text(
                 "BVN ",
@@ -161,13 +127,14 @@ class _BvnScreenState extends State<BvnScreen> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Bvn field is required";
-                        } else if (value.length < 10 || value.length > 10) {
-                          return "max of 10 character is required";
+                        } else if (value.length < 11 || value.length > 11) {
+                          return "max of 11 character is required";
                         }
                         return null;
                       },
                     ),
                   ),
+                
                 ],
               ),
               SizedBox(height: 19.h),
@@ -186,10 +153,8 @@ class _BvnScreenState extends State<BvnScreen> {
                 onPressed: () async {
                   if (!controller.bvnFormKey.currentState!.validate()) {
                     return;
-                  } else if (controller.pickedImage == null) {
-                    Get.snackbar("Error", "Please enter a BVN");
-                  } else {
-                    controller.uploadIdentity(context);
+                  }  else {
+                    controller.bvnUpload(context);
                     EasyLoading.dismiss();
                   }
                 },

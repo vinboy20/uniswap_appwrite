@@ -264,13 +264,12 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                   height: 10.h,
                                 ),
                                 itemBuilder: (BuildContext context, index) {
-                                  var subcat = categorySubcategories[
-                                      index]; // Filtered list
+                                  var subcat = categorySubcategories[index]; // Filtered list
 
                                   return GestureDetector(
                                     onTap: () {
                                       WidgetsBinding.instance
-                                          .addPostFrameCallback((_) {
+                                        .addPostFrameCallback((_) {
                                         setState(() {
                                           selectedCategory = subcat.catId;
                                           categoryTitle = subcat.title;
@@ -278,6 +277,8 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                       });
                                       box.write('category', subcat.catId);
                                       box.write('subcategory', subcat.docId);
+                                      box.write('categoryName', category.title);
+                                      box.write('subcategoryName', subcat.title);
                                       Navigator.pop(context);
                                     },
                                     child: Padding(
@@ -343,11 +344,15 @@ class _UploadItemPageState extends State<UploadItemPage> {
 
       String catId = box.read('category') ?? "";
       String subcatId = box.read('subcategory') ?? "";
+      String categoryName = box.read('categoryName') ?? "";
+      String subcategoryName = box.read('subcategoryName') ?? "";
       final AuthController controller = Get.put(AuthController());
       final bool isLoggedIn = await controller.checkSessions();
 
       // Access individual fields from the user data
       final userId = SavedData.getUserId();
+      final userData = SavedData.getUserData();
+      String username = userData['name'] ?? '';
 
       bool? isBid;
       if (bidEndDate == null && bidEndTime == null) {
@@ -361,6 +366,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
         catId: catId,
         subcatId: subcatId,
         userId: userId,
+        username: username,
         image: fileIds,
         productName: productNameController.text.trim(),
         productCondition: productCondition,
@@ -370,6 +376,8 @@ class _UploadItemPageState extends State<UploadItemPage> {
         bidEndDate: bidEndDate.toString(),
         bidEndTime: bidEndTime.toString(),
         location: selectedLocation,
+        categoryName: categoryName,
+        subcategoryName: subcategoryName,
         phone: phoneNumberController.text.trim(),
         description: descriptionController.text.trim(),
         productQty: selectedQty.toString(),

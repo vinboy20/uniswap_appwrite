@@ -45,6 +45,8 @@ class AuthController extends GetxController {
   // final BVN variables
   TextEditingController bvn = TextEditingController();
   GlobalKey<FormState> bvnFormKey = GlobalKey<FormState>();
+  TextEditingController nin = TextEditingController();
+  GlobalKey<FormState> ninFormKey = GlobalKey<FormState>();
   GlobalKey<FormState> changePasswordFormKey = GlobalKey<FormState>();
 
   /// Touch ID Variable
@@ -85,6 +87,7 @@ class AuthController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         EasyLoading.dismiss();
+         TLoaders.errorSnackBar(title: 'Oh Snap!', message: "no internet connection");
         return;
       }
 
@@ -100,27 +103,35 @@ class AuthController extends GetxController {
         password: password.text.trim(),
         name: name.text.trim(),
       );
+      
       final newUser = UserModel(
         name: name.text.trim(),
         email: email.text.trim(),
         userId: user.$id,
       );
+
+      // final newWallet = WalletModel(
+      //   balance: "0",
+      //   userId: user.$id,
+      // );
       final newWallet = WalletModel(
-        balance: 2,
+        docId: user.$id, // Explicitly set docId to userId
         userId: user.$id,
+        balance: "0.00",
+        escrowBalance: "0.00",
       );
+     
 
       await account.createEmailPasswordSession(
         email: email.text.trim(),
         password: password.text.trim(),
       );
-
       await dataController.saveUserRecord(newUser);
 
       await dataController.createUserWallet(newWallet);
 
       SavedData.saveUserId(user.$id);
-      dataController.getUserData();
+      // dataController.getUserData();
       // Remove loader
       EasyLoading.dismiss();
 
@@ -140,6 +151,13 @@ class AuthController extends GetxController {
 
   // Login User
   Future loginUser() async {
+    try {
+      // Delete current session if it exists
+     await account.deleteSession(sessionId: 'current');
+      await SavedData.clearUserData();
+    } catch (e) {
+      print('No session to delete $e');
+    }
     try {
       EasyLoading.show(status: 'We are processing your information...');
       // Check internet connectivity
@@ -406,10 +424,52 @@ class AuthController extends GetxController {
   }
 
   // BVN Section
-  Future<void> uploadIdentity(context) async {
+  Future<void> bvnUpload(context) async {
     EasyLoading.show(status: 'Saving...');
     try {
       final bvnNo = bvn.text.trim();
+
+      // Retrieve the entire user data map
+      final userData = SavedData.getUserData();
+      // Access individual fields
+      final email = userData['email'];
+      final userId = SavedData.getUserId();
+      // Save user identity with the returned fileId
+      await dataController.saveUserIdentity({
+        'bvn': bvnNo.toString(),
+        'userID': userId,
+        'nin': "", // Add NIN if applicable
+        'fileId': "", // Use the returned fileId here
+      });
+
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => SimpleDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadiusStyle.roundedBorder10),
+          alignment: Alignment.center,
+          contentPadding: EdgeInsets.zero,
+          backgroundColor: const Color(0xFFFFFFFF),
+          children: [
+            BvnPopup(
+              email: email,
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      EasyLoading.dismiss();
+      TLoaders.errorSnackBar(title: "Error", message: e.toString());
+      print(e.toString());
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
+  // NIN Section
+
+  Future<void> ninUpload(context) async {
+    EasyLoading.show(status: 'Saving...');
+    try {
+      final ninNo = nin.text.trim();
 
       // Upload the image and get the fileId
       final fileId = await dataController.uploadImage(Credentials.userBucketId, pickedImage!);
@@ -423,9 +483,9 @@ class AuthController extends GetxController {
       final userId = SavedData.getUserId();
       // Save user identity with the returned fileId
       await dataController.saveUserIdentity({
-        'bvn': bvnNo.toString(),
+        'nin': ninNo.toString(),
         'userID': userId,
-        'nin': "", // Add NIN if applicable
+        'bvn': "", // Add NIN if applicable
         'fileId': fileId, // Use the returned fileId here
       });
 
@@ -537,7 +597,7 @@ class AuthController extends GetxController {
       TLoaders.successSnackBar(title: 'Congratulations', message: 'Your account has been created');
 
       // Navigate to the next screen
-      Get.to(() => HomeContainer());
+      Get.off(() => HomeContainer());
       // print(formattedDate);
       // print(selectedGenderValue);
     } catch (e) {

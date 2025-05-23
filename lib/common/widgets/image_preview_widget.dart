@@ -2,6 +2,8 @@ import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:uniswap/common/widgets/loaders/shimmer.dart';
+import 'package:uniswap/core/app_export.dart';
+import 'package:uniswap/core/utils/credentials.dart';
 
 class FilePreviewImage extends StatelessWidget {
   final String bucketId;
@@ -29,10 +31,9 @@ class FilePreviewImage extends StatelessWidget {
     this.isCircular = true,
   });
 
- 
   @override
   Widget build(BuildContext context) {
-     final Storage storage = Storage(Get.find<Client>());
+    final Storage storage = Storage(Get.find<Client>());
     // Handle empty or invalid fileId
     if (fileId.isEmpty) {
       return fallbackWidget ??
@@ -42,6 +43,22 @@ class FilePreviewImage extends StatelessWidget {
             color: Colors.grey,
           );
     }
+    // return Image.network(
+    //   "${Credentials.imageApiEndpoint}/storage/buckets/$bucketId/files/$fileId/view?project=${Credentials.projectID}&mode=admin",
+    //   headers: {"Origin": "*"}, // Add this line
+    //   loadingBuilder: (context, child, loadingProgress) {
+    //     if (loadingProgress == null) return child;
+    //     return TShimmerEffect(
+    //       width: width,
+    //       height: height,
+    //       // radius: borderRadius,
+    //     );
+    //   },
+    //    width: width,
+    //   height: height,
+    //   fit: BoxFit.cover,
+    //   errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+    // );
 
     return FutureBuilder(
       future: storage.getFilePreview(

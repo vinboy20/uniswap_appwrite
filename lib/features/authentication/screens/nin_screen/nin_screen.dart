@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uniswap/common/widgets/appbar/appbar.dart';
-import 'package:uniswap/common/widgets/button/custom_outlined_button.dart';
 import 'package:uniswap/common/widgets/button/custom_pill_button.dart';
 import 'package:uniswap/common/widgets/form/custom_text_form_field.dart';
 import 'package:uniswap/common/widgets/image_picker_widget.dart';
-import 'package:uniswap/common/widgets/layouts/positioning_layout.dart';
 import 'package:uniswap/core/app_export.dart';
+import 'package:uniswap/controllers/auth_controller.dart';
 import 'package:uniswap/features/authentication/screens/bvn_screen/bvn_screen.dart';
-import 'package:uniswap/features/authentication/screens/profile_form_screen/profile_form_screen.dart';
 
 class NinScreen extends StatefulWidget {
   const NinScreen({super.key});
@@ -20,32 +19,29 @@ class NinScreen extends StatefulWidget {
 }
 
 class _NinScreenState extends State<NinScreen> {
-  TextEditingController ninController = TextEditingController();
-  GlobalKey<FormState> bvnFormKey = GlobalKey<FormState>();
-  XFile? _pickedImage;
 
   final GetStorage storage = GetStorage();
+  final controller = Get.put(AuthController());
 
-  Future<void> localImagePicker() async {
+   Future<void> localImagePicker() async {
     final ImagePicker imagePicker = ImagePicker();
     await THelperFunctions.imagePickerDialog(
       context: context,
       cameraFCT: () async {
-        _pickedImage = await imagePicker.pickImage(source: ImageSource.camera);
+        controller.pickedImage = await imagePicker.pickImage(source: ImageSource.camera);
         setState(() {});
       },
       galleryFCT: () async {
-        _pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
+        controller.pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
         setState(() {});
       },
       removeFCT: () {
         setState(() {
-          _pickedImage = null;
+          controller.pickedImage = null;
         });
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -117,7 +113,7 @@ class _NinScreenState extends State<NinScreen> {
 
               // Image Picker
               PickImageWidget(
-                pickedImage: _pickedImage,
+                pickedImage: controller.pickedImage,
                 function: () async {
                   await localImagePicker();
                 },
@@ -129,7 +125,7 @@ class _NinScreenState extends State<NinScreen> {
               ),
               SizedBox(height: TSizes.spaceBtwSections),
               Text(
-                "BVN ",
+                "NIN ",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               SizedBox(height: 14.h),
@@ -151,24 +147,28 @@ class _NinScreenState extends State<NinScreen> {
                   SizedBox(height: 4.h),
                   // Form
                   Form(
-                    key: bvnFormKey,
+                    key: controller.ninFormKey,
                     child: CustomTextFormField(
-                      controller: ninController,
+                      controller: controller.nin,
                       hintText: "0",
                       hintStyle: CustomTextStyles.text12w400,
                       textInputAction: TextInputAction.done,
+                      textInputType: TextInputType.number,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 19),
                       borderDecoration: TextFormFieldStyleHelper.outlineGrey200,
                       filled: true,
                       fillColor: TColors.white,
                       validator: (value) {
                         if (value!.isEmpty) {
-                          return "Nin field is required";
+                          return "nin field is required";
+                        } else if (value.length < 10 || value.length > 10) {
+                          return "max of 10 character is required";
                         }
                         return null;
                       },
                     ),
                   ),
+                
                 ],
               ),
               SizedBox(height: 19.h),
@@ -182,26 +182,16 @@ class _NinScreenState extends State<NinScreen> {
                 ),
               ),
               SizedBox(height: TSizes.spaceBtwSections),
-              CustomPillButton(
+             CustomPillButton(
                 color: TColors.primary,
-                onPressed: () {
-                  if (!bvnFormKey.currentState!.validate()) {
+                onPressed: () async {
+                  if (!controller.ninFormKey.currentState!.validate()) {
                     return;
-                  } else if (_pickedImage == null) {
-                    THelperFunctions.showSnackBar("Upload BVN Image");
+                  } else if (controller.pickedImage == null) {
+                    Get.snackbar("Error", "Please upload your NIN");
                   } else {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => SimpleDialog(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadiusStyle.roundedBorder10),
-                        alignment: Alignment.center,
-                        contentPadding: EdgeInsets.zero,
-                        backgroundColor: const Color(0xFFFFFFFF),
-                        children: [
-                          _buildKYCScreenPopup(context),
-                        ],
-                      ),
-                    );
+                    controller.ninUpload(context);
+                    EasyLoading.dismiss();
                   }
                 },
                 text: "Next",
@@ -213,55 +203,5 @@ class _NinScreenState extends State<NinScreen> {
     );
   }
 
-  Widget _buildKYCScreenPopup(BuildContext context) {
-    String email = storage.read('email') ?? 'your-email@example.com';
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 0,
-      margin: const EdgeInsets.all(0),
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusStyle.roundedBorder10,
-      ),
-      child: SizedBox(
-        height: 355.h,
-        width: 342.w,
-        child: PositioningLayout(
-          child: Align(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 27),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("KYC Successful", style: CustomTextStyles.text14w400),
-                  SizedBox(height: 24.h),
-                  SizedBox(
-                    width: 286.w,
-                    child: Text(
-                      "Notification will be sent to your mail($email) in a few minutes for the confirmation of your KYC",
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      // style: theme.textTheme.bodyMedium!.copyWith(height: 1.43),
-                    ),
-                  ),
-                  SizedBox(height: 32.h),
-                  CustomOutlinedButton(
-                    width: 158.w,
-                    height: 50.h,
-                    text: "Ok",
-                    buttonTextStyle: CustomTextStyles.text14w400cPrimary,
-                    onPressed: () {
-                      Get.to(() => const ProfileFormScreen());
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+
 }

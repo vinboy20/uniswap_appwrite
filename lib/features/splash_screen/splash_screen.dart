@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
       box.write('isFirstTime', false);
       Get.offAll(() => const OnboardingScreen());
     } else {
-      final String? userId = await appwriteController.getCurrentUserId();
+      String? userId = await appwriteController.getCurrentUserId();
       if (userId != null) {
         final userData = await appwriteController.databases.getDocument(
           databaseId: Credentials.databaseId,

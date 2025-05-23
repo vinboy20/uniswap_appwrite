@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -21,7 +20,6 @@ class PopularProduct extends StatefulWidget {
 
 class _PopularProductState extends State<PopularProduct> {
   final controller = Get.put(ProductController());
-  
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +58,7 @@ class _PopularProductState extends State<PopularProduct> {
         return Center(child: Text('No active products available'));
       }
 
-       final myProduct = activeProducts.where((product) => product.isApproved == true).toList();
+      final myProduct = activeProducts.where((product) => product.isApproved == true && product.status == true).toList();
 
       return GridView.builder(
         shrinkWrap: true,
@@ -106,6 +104,14 @@ class _PopularProductState extends State<PopularProduct> {
                               topRight: Radius.circular(10),
                             ),
                           ),
+                        // Image(
+                        //   image: CachedNetworkImageProvider(
+                        //     // "${Credentials.apiEndpoint}/storage/buckets/${Credentials.productBucketId}/files/${images[0] ?? ""}/view?project=${Credentials.projectID}&mode=admin",
+                        //     "https://localhost/v1/storage/buckets/${Credentials.productBucketId}/files/${images[0] ?? ""}/view?project=${Credentials.projectID}&mode=admin",
+                        //   ),
+                        //   width: double.maxFinite,
+                        //   height: 116.h,
+                        // ),
                         Liked(itemId: singleProduct.docId.toString()),
                       ],
                     ),

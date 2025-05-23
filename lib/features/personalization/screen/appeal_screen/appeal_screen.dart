@@ -4,8 +4,10 @@ import 'package:uniswap/common/widgets/button/custom_icon_button.dart';
 import 'package:uniswap/common/widgets/form/custom_text_form_field.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/theme/custom_button_style.dart';
+
 class AppealScreen extends StatefulWidget {
-  const AppealScreen({super.key});
+  const AppealScreen({super.key, required this.productId});
+  final String productId;
 
   @override
   State<AppealScreen> createState() => _AppealScreenState();

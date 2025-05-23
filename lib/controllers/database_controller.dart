@@ -74,22 +74,42 @@ class DatabaseController extends GetxController {
   }
 
   // Create userWallet during registration
+  // Future<void> createUserWallet(WalletModel wallet) async {
+  //   try {
+  //     await databases.createDocument(
+  //       databaseId: databaseId,
+  //       collectionId: walletCollectionId,
+  //       documentId: wallet.userId.toString(),
+  //       data: wallet.toJson(),
+  //     );
+  //   } on AppwriteException catch (e) {
+  //     throw TAppwriteException(e.message.toString()).message;
+  //   } on FormatException {
+  //     throw const TFormatException();
+  //   } on PlatformException catch (e) {
+  //     throw TPlatformException(e.code).message;
+  //   } catch (_) {
+  //     throw 'An unexpected error occurred. Please try again.';
+  //   }
+  // }
+
   Future<void> createUserWallet(WalletModel wallet) async {
     try {
       await databases.createDocument(
         databaseId: databaseId,
         collectionId: walletCollectionId,
-        documentId: wallet.userId.toString(),
+        documentId: wallet.docId, // Use the docId from model
         data: wallet.toJson(),
       );
     } on AppwriteException catch (e) {
+      if (e.code == 409) {
+        // Document already exists
+        Get.log('Wallet already exists for user ${wallet.userId}');
+        return;
+      }
       throw TAppwriteException(e.message.toString()).message;
-    } on FormatException {
-      throw const TFormatException();
-    } on PlatformException catch (e) {
-      throw TPlatformException(e.code).message;
-    } catch (_) {
-      throw 'An unexpected error occurred. Please try again.';
+    } catch (e) {
+      throw 'Failed to create wallet: ${e.toString()}';
     }
   }
 
@@ -210,6 +230,7 @@ class DatabaseController extends GetxController {
       );
     } on AppwriteException catch (e) {
       TLoaders.errorSnackBar(title: 'Error', message: e.message.toString());
+      print(e.message.toString());
     } on FormatException {
       throw const TFormatException();
     } on PlatformException catch (e) {
@@ -229,7 +250,8 @@ class DatabaseController extends GetxController {
         data: transaction.toJson(),
       );
     } on AppwriteException catch (e) {
-      throw TAppwriteException(e.message.toString()).message;
+      TLoaders.errorSnackBar(title: 'Error', message: e.message.toString());
+      // throw TAppwriteException(e.message.toString()).message;
     } on FormatException {
       throw const TFormatException();
     } on PlatformException catch (e) {
@@ -262,7 +284,7 @@ class DatabaseController extends GetxController {
   // Future<List<Document>> getMessages(String userId1, String userId2) async {
   //   try {
   //     final response = await databases.listDocuments(databaseId: databaseId, collectionId: chatCollectionId, queries: [
-  //       // Query.or([Query.equal("senderId", userId1), 
+  //       // Query.or([Query.equal("senderId", userId1),
   //       // Query.equal("receiverId", userId2)]),
   //        Query.or([Query.equal("senderId", userId1), Query.equal("receiverId", userId2)]),
   //       Query.orderAsc("timestamp"),
@@ -398,6 +420,4 @@ class DatabaseController extends GetxController {
 
     ratingProgress.assignAll(progress);
   }
-
-  
 }

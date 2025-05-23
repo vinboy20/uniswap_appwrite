@@ -374,3 +374,90 @@ class _ChattingScreenState extends State<ChattingScreen> {
     );
   }
 }
+
+
+{
+    "requestSuccessful": true,
+    "responseMessage": "success",
+    "responseCode": "0",
+    "responseBody": {
+        "walletName": "Staging Wallet - ref16804248425966",
+        "walletReference": "ref16842048425966",
+        "customerName": "vinworld-Osueke Vincent",
+        "customerEmail": "vincendinho@gmail.com",
+        "feeBearer": "SELF",
+        "bvnDetails": {
+            "bvn": "22145581701",
+            "bvnDateOfBirth": "1991-02-20"
+        },
+        "accountNumber": "8147445824",
+        "accountName": "vinworld-Osueke Vincent",
+        "topUpAccountDetails": {
+            "accountNumber": "3921279677",
+            "accountName": "vinworld-Osueke Vincent",
+            "bankCode": "001",
+            "bankName": "Monnify Test Bank",
+            "createdOn": "2025-05-23T03:18:11.484+00:00"
+        }
+    }
+}
+
+
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+class MonnifyService {
+  final String _baseUrl = dotenv.env['MONNIFY_BASE_URL']!;
+  final String _apiKey = dotenv.env['MONNIFY_API_KEY']!;
+  final String _secretKey = dotenv.env['MONNIFY_SECRET_KEY']!;
+  final String _contractCode = dotenv.env['MONNIFY_CONTRACT_CODE']!;
+
+  Future<String?> getAccessToken() async {
+    final credentials = base64Encode(utf8.encode('$_apiKey:$_secretKey'));
+    final response = await http.post(
+      Uri.parse('$_baseUrl/auth/login'),
+      headers: {
+        'Authorization': 'Basic $credentials',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['responseBody']['accessToken'];
+    } else {
+      print('Token error: ${response.body}');
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>?> getWalletBalance({
+    required String accountNumber,
+   
+  }) async {
+    final token = await getAccessToken();
+    if (token == null) return null;
+
+    final body = {
+      "accountNumber": accountNumber,
+    };
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl/disbursements/wallet/balance?accountNumber=$accountNumber'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body)['responseBody'];
+    } else {
+      print('Reserved account error: ${response.body}');
+      return null;
+    }
+  }
+
+  // You can also include `initializeTransaction`, `getTransactionStatus` as before
+}

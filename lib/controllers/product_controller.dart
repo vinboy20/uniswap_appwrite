@@ -95,6 +95,9 @@ class ProductController extends GetxController {
       final response = await _databases.listDocuments(
         databaseId: databaseId,
         collectionId: productCollectionId,
+        queries: [
+          Query.orderDesc('\$createdAt')
+        ],
       );
       // Map the fetched documents to ProductModel
       products.value = response.documents.map((doc) => ProductModel.fromJson(doc.data)).toList();
@@ -261,7 +264,6 @@ class ProductController extends GetxController {
   }
 
   
-
   // Fetch current user bids
   Future<void> fetchUserBids() async {
     try {
@@ -350,13 +352,39 @@ class ProductController extends GetxController {
     }
   }
 
+  // Future<void> fetchTransactionData(String userId) async {
+  //   try {
+  //     final response = await _databases.listDocuments(
+  //       databaseId: Credentials.databaseId,
+  //       collectionId: Credentials.transactionCollectionId,
+  //       queries: [
+  //         Query.equal('userId', [userId])
+  //       ],
+  //     );
+
+  //     List<TransactionModel> fetchedTransactions = response.documents.map((doc) {
+  //       return TransactionModel.fromJson(doc.data);
+  //     }).toList();
+
+  //     transaction.assignAll(fetchedTransactions);
+  //   } catch (e) {
+  //     TLoaders.errorSnackBar(title: "Error", message: "Error fetching transactions: $e");
+  //   }
+  // }
   Future<void> fetchTransactionData(String userId) async {
     try {
+      isLoading(true);
+
       final response = await _databases.listDocuments(
         databaseId: Credentials.databaseId,
         collectionId: Credentials.transactionCollectionId,
         queries: [
-          Query.equal('userId', [userId])
+          Query.or([
+            Query.equal('buyerId', userId), // Transactions where user is buyer
+            Query.equal('sellerId', userId), // Transactions where user is seller
+            Query.equal('userId', userId),
+          ]),
+         Query.orderDesc('\$createdAt')
         ],
       );
 
@@ -367,6 +395,9 @@ class ProductController extends GetxController {
       transaction.assignAll(fetchedTransactions);
     } catch (e) {
       TLoaders.errorSnackBar(title: "Error", message: "Error fetching transactions: $e");
+    } finally {
+      isLoading(false);
     }
   }
+
 }

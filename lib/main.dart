@@ -6,13 +6,20 @@ import 'package:get_storage/get_storage.dart';
 import 'package:uniswap/bindings/general_bindings.dart';
 import 'package:uniswap/controllers/appwrite_controller.dart';
 import 'package:uniswap/routes/routes.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'core/app_export.dart';
 
 var globalMessengerKey = GlobalKey<ScaffoldMessengerState>();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
+  
   WidgetsFlutterBinding.ensureInitialized();
+  // await Monnify.initialize(
+  //   applicationMode: ApplicationMode.TEST, // Change to LIVE in production
+  //   apiKey: _apiKey,
+  //   contractCode: _contractCode,
+  // );
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -20,6 +27,7 @@ Future<void> main() async {
   ThemeHelper().changeTheme('primary');
   configLoading();
   await GetStorage.init();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 

@@ -4,7 +4,6 @@ import 'package:readmore/readmore.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:uniswap/common/widgets/appbar/appbar.dart';
 import 'package:uniswap/common/widgets/button/custom_elevated_button.dart';
-import 'package:uniswap/common/widgets/button/custom_icon_button.dart';
 import 'package:uniswap/common/widgets/button/custom_outlined_button.dart';
 import 'package:uniswap/common/widgets/form/custom_text_form_field.dart';
 import 'package:uniswap/common/widgets/layouts/positioning_layout.dart';
@@ -34,7 +33,7 @@ class _BookTicketScreenState extends State<BookTicketScreen> {
   final TicketController eventController = Get.put(TicketController());
   TextEditingController amountController = TextEditingController();
   final ProductController productController = Get.find<ProductController>();
-  int amount = 0;
+  double amount = 0;
   int sliderIndex = 0;
 
   void shareContent() {
@@ -475,8 +474,8 @@ class _BookTicketScreenState extends State<BookTicketScreen> {
                           Obx(() {
                             final wallets = productController.wallet;
                             if (wallets.isEmpty) return Text("₦0", style: CustomTextStyles.text18w600cPrimary);
-
-                            amount = wallets.first.balance ?? 0;
+                            final String amount = wallets.first.balance ?? "0";
+                           
                             return Row(
                               children: [
                                 Padding(

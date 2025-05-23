@@ -92,7 +92,7 @@ class MyProfileScreen extends StatelessWidget {
                   icon: Icons.notifications,
                   title: "Notifications",
                   onTap: () {
-                    Get.to(() => const NotificationScreen());
+                    // Get.to(() => const NotificationScreen());
                   },
                 ),
 
