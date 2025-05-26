@@ -19,7 +19,8 @@ class DeleteAccountScreen extends StatefulWidget {
 }
 
 class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
-  final _usercontroller = Get.put(UserController());
+  
+  final _usercontroller = Get.find<UserController>();
   final List<String> items = [
     'I dont want to be a member anymore',
     'Noting',

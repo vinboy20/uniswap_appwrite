@@ -12,16 +12,17 @@ import 'package:uniswap/core/utils/formatters/formatter.dart';
 import 'package:uniswap/core/utils/helpers/loaders.dart';
 import 'package:uniswap/features/shop/screen/bid_item_payment_screen/bid_item_payment_screen.dart';
 import 'package:uniswap/features/shop/screen/bid_screen/widget/time_bid.dart';
+import 'package:uniswap/features/shop/screen/item_decription_screen/item_decription_screen.dart';
 import 'package:uniswap/models/bid_model.dart';
 import 'package:uniswap/models/product_model.dart';
 import 'package:uniswap/theme/custom_button_style.dart';
 
 class BidItem extends StatefulWidget {
-  const BidItem({super.key, this.product, required this.bid});
+  const BidItem({super.key, required this.bid});
 
-  final ProductModel? product;
+  // final ProductModel? product;
   final BidModel bid;
-  // final String bidStatus;
+  
 
   @override
   State<BidItem> createState() => _BidItemState();
@@ -29,19 +30,24 @@ class BidItem extends StatefulWidget {
 
 class _BidItemState extends State<BidItem> {
   final ProductController productController = Get.find<ProductController>();
+
   double? _highestBid;
 
   // Fetch the highest bid
+  ProductModel? product;
+
   @override
   void initState() {
     super.initState();
-    // Fetch the highest bid when the widget is initialized
-    _fetchBidData();
+    product = productController.products.firstWhereOrNull(
+      (element) => element.docId == widget.bid.productId,
+    );
+    _fetchBidData(); // Call this after product is initialized
   }
 
   Future<void> _fetchBidData() async {
     // Fetch the highest bid
-    final productId = widget.product!.docId;
+    final productId = product!.docId;
     final highestBid = await productController.getHighestBid(productId ?? ""); // Pass the productId
     if (highestBid != null) {
       setState(() {
@@ -54,10 +60,7 @@ class _BidItemState extends State<BidItem> {
     }
   }
 
-  // Future<void> _onDeleteBid(String docId) async {
-  //   // Delete the bid
-
-  // }
+ 
 
   //   // Method to check bid status
   String _getBidStatus(ProductModel? product, BidModel bid, double? highestBid) {
@@ -89,13 +92,14 @@ class _BidItemState extends State<BidItem> {
 
   @override
   Widget build(BuildContext context) {
-    final bidStatus = _getBidStatus(widget.product, widget.bid, _highestBid);
+    // final ProductModel? product = productController.products.firstWhereOrNull((element) => element.docId == widget.bid.productId);
+    final bidStatus = _getBidStatus(product, widget.bid, _highestBid);
     return Column(
       children: [
         if (bidStatus == "BidWon")
           bidwon(
             context,
-            image: widget.product?.image?.isNotEmpty == true ? widget.product!.image![0] : "",
+            image: product?.image?.isNotEmpty == true ? product!.image![0] : "",
             won: CustomImageView(
               imagePath: "assets/images/bid_won.png",
               width: 100.w,
@@ -106,11 +110,11 @@ class _BidItemState extends State<BidItem> {
         if (bidStatus == "BidLost")
           bidlost(
             context,
-            image: widget.product?.image?.isNotEmpty == true ? widget.product!.image![0] : "",
+            image: product?.image?.isNotEmpty == true ? product!.image![0] : "",
             timeLeft: "Time left",
             time: TimeBid(
-              time: widget.product?.bidEndTime,
-              date: widget.product?.bidEndDate,
+              time: product?.bidEndTime,
+              date: product?.bidEndDate,
             ),
             lost: CustomImageView(
               imagePath: "assets/images/bid_lost.png",
@@ -122,11 +126,11 @@ class _BidItemState extends State<BidItem> {
         if (bidStatus == "Countdown")
           _buildImage(
             context,
-            image: widget.product?.image?.isNotEmpty == true ? widget.product!.image![0] : "",
+            image: product?.image?.isNotEmpty == true ? product!.image![0] : "",
             timeLeft: "Time left",
             time: TimeBid(
-              time: widget.product?.bidEndTime,
-              date: widget.product?.bidEndDate,
+              time: product?.bidEndTime,
+              date: product?.bidEndDate,
             ),
           ),
         Container(
@@ -140,14 +144,14 @@ class _BidItemState extends State<BidItem> {
                   Padding(
                     padding: EdgeInsets.only(top: 3.h),
                     child: Text(
-                      TFormatter.formattedStringPrice(widget.product?.startPrice),
+                      TFormatter.formattedStringPrice(product?.startPrice),
                       style: CustomTextStyles.text12wBold.copyWith(
                         color: theme.colorScheme.onSecondaryContainer,
                       ),
                     ),
                   ),
                   Text(
-                    widget.product?.productName ?? 'N/A',
+                    product?.productName ?? 'N/A',
                     style: CustomTextStyles.text12wBold.copyWith(
                       color: theme.colorScheme.onSecondaryContainer,
                     ),
@@ -206,7 +210,12 @@ class _BidItemState extends State<BidItem> {
           CustomElevatedButton(
             onPressed: () {
               // Navigate to payment screen
-              Get.to(() => BidItemPaymentScreen(product: widget.product, highestBid: _highestBid));
+              Get.to(() => BidItemPaymentScreen(product: product, highestBid: _highestBid));
+              // if (product != null) {
+              //   Get.to(() => ItemDecriptionScreen(product: product!, highestBid: _highestBid));
+              // } else {
+              //   TLoaders.errorSnackBar(title: "Error", message: "Product not found.");
+              // }
             },
             height: 25.54.h,
             width: 156.w,

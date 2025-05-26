@@ -12,7 +12,7 @@ class InputUniScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AuthController());
+    final _controller = Get.find<AuthController>();
 
     return SafeArea(
       child: Scaffold(
@@ -114,7 +114,7 @@ class InputUniScreen extends StatelessWidget {
                       style: CustomTextStyles.text12w400,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    items: controller.items
+                    items: _controller.items
                         .map((String value) => DropdownMenuItem<String>(
                               value: value,
                               child: Text(
@@ -124,9 +124,9 @@ class InputUniScreen extends StatelessWidget {
                               ),
                             ))
                         .toList(),
-                    value: controller.selectedLocationValue.value, // Use .value to get the observable value
+                    value: _controller.selectedLocationValue.value, // Use .value to get the observable value
                     onChanged: (String? newValue) {
-                      controller.setSelectedLocationValue(newValue); // Update the observable value
+                      _controller.setSelectedLocationValue(newValue); // Update the observable value
                     },
                     buttonStyleData: ButtonStyleData(
                       height: 50.h,
@@ -173,7 +173,7 @@ class InputUniScreen extends StatelessWidget {
               CustomPillButton(
                 color: TColors.primary,
                 onPressed: () {
-                  controller.saveSelectedUniversity();
+                  _controller.saveSelectedUniversity();
                 },
                 text: "Continue",
               ),

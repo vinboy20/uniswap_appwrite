@@ -15,7 +15,7 @@ class AllCatWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ProductController productController = Get.put(ProductController());
+    final ProductController productController = Get.find<ProductController>();
     final categories = productController.categories;
     final subcategories = productController.subcategories;
     return Container(

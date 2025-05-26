@@ -40,7 +40,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
   TextEditingController discountPriceController = TextEditingController();
   TextEditingController moreController = TextEditingController();
 
-  final ProductController productController = Get.put(ProductController());
+  final ProductController productController = Get.find<ProductController>();
   final Storage storage = Storage(Get.find<Client>());
 
   DateTime? selectedDate;
@@ -371,8 +371,8 @@ class _UploadItemPageState extends State<UploadItemPage> {
         productName: productNameController.text.trim(),
         productCondition: productCondition,
         startPrice: startPriceController.text.trim(),
-        percentage: percentageController.text.trim(),
-        discountPrice: discountPriceController.text.trim(),
+        // percentage: percentageController.text.trim(),
+        // discountPrice: discountPriceController.text.trim(),
         bidEndDate: bidEndDate.toString(),
         bidEndTime: bidEndTime.toString(),
         location: selectedLocation,
@@ -380,7 +380,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
         subcategoryName: subcategoryName,
         phone: phoneNumberController.text.trim(),
         description: descriptionController.text.trim(),
-        productQty: selectedQty.toString(),
+        // productQty: selectedQty.toString(),
         moreSpec: moreController.text.trim(),
         isBid: isBid,
       );
@@ -679,40 +679,40 @@ class _UploadItemPageState extends State<UploadItemPage> {
                         theme.colorScheme.onPrimaryContainer.withOpacity(1),
                   ),
                   SizedBox(height: 24.h),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Product Quantity",
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF475569)),
-                      ),
-                      SizedBox(height: 8.h),
-                      CustomDropDown(
-                        width: 139.w,
-                        icon: Icon(Icons.keyboard_arrow_down),
-                        hintText: "Qty",
-                        hintStyle: TextStyle(fontSize: 12.sp),
-                        items: dropdownItemList,
-                        contentPadding: EdgeInsets.symmetric(
-                            horizontal: 12.w, vertical: 8.h),
-                        borderDecoration:
-                            DropDownStyleHelper.outlineOnErrorTL22,
-                        filled: true,
-                        fillColor:
-                            theme.colorScheme.onPrimaryContainer.withOpacity(1),
-                        onChanged: (value) {
-                          setState(() {
-                            selectedQty = value;
-                          });
-                        },
-                        validator: (value) => value == null ? 'Required' : null,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24.h),
+                  // Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   children: [
+                  //     Text(
+                  //       "Product Quantity",
+                  //       style: TextStyle(
+                  //           fontSize: 14.sp,
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Color(0xFF475569)),
+                  //     ),
+                  //     SizedBox(height: 8.h),
+                  //     CustomDropDown(
+                  //       width: 139.w,
+                  //       icon: Icon(Icons.keyboard_arrow_down),
+                  //       hintText: "Qty",
+                  //       hintStyle: TextStyle(fontSize: 12.sp),
+                  //       items: dropdownItemList,
+                  //       contentPadding: EdgeInsets.symmetric(
+                  //           horizontal: 12.w, vertical: 8.h),
+                  //       borderDecoration:
+                  //           DropDownStyleHelper.outlineOnErrorTL22,
+                  //       filled: true,
+                  //       fillColor:
+                  //           theme.colorScheme.onPrimaryContainer.withOpacity(1),
+                  //       onChanged: (value) {
+                  //         setState(() {
+                  //           selectedQty = value;
+                  //         });
+                  //       },
+                  //       validator: (value) => value == null ? 'Required' : null,
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 24.h),
 
                   Text(
                     "Sale type",
@@ -793,6 +793,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                   controller: startPriceController,
                                   hintText: "Type item start price",
                                   hintStyle: CustomTextStyles.text12w400,
+                                  textInputType: TextInputType.number,
                                   borderDecoration: TextFormFieldStyleHelper
                                       .outlineOnErrorTL25,
                                   filled: true,
@@ -808,79 +809,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 24.h),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Discounts (optional)",
-                                  style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: Color(0xFF475569)),
-                                ),
-                                SizedBox(height: 24.h),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Percentage (%)",
-                                          style: CustomTextStyles.text14w400,
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        CustomTextFormField(
-                                          width: 148.w,
-                                          controller: percentageController,
-                                          borderDecoration:
-                                              TextFormFieldStyleHelper
-                                                  .outlineOnErrorTL25,
-                                          filled: true,
-                                          fillColor: theme
-                                              .colorScheme.onPrimaryContainer
-                                              .withOpacity(1),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          top: 34.h, bottom: 12.h),
-                                      child: Text(
-                                        "=",
-                                        style: CustomTextStyles.text12w400,
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Price",
-                                          style: CustomTextStyles.text12w400,
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        CustomTextFormField(
-                                          width: 148.w,
-                                          controller: discountPriceController,
-                                          borderDecoration:
-                                              TextFormFieldStyleHelper
-                                                  .outlineOnErrorTL25,
-                                          filled: true,
-                                          fillColor: theme
-                                              .colorScheme.onPrimaryContainer
-                                              .withOpacity(1),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          
+                           
                           ],
                         )
                       : Column(
@@ -898,6 +827,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
                                   controller: startPriceController,
                                   hintText: "Type item start price",
                                   hintStyle: CustomTextStyles.text12w400,
+                                  textInputType: TextInputType.number,
                                   borderDecoration: TextFormFieldStyleHelper
                                       .outlineOnErrorTL25,
                                   filled: true,
@@ -908,75 +838,7 @@ class _UploadItemPageState extends State<UploadItemPage> {
                               ],
                             ),
                             SizedBox(height: 24.h),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Discount(optional)",
-                                  style: CustomTextStyles.text14w400,
-                                ),
-                                SizedBox(height: 24.h),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Percentage (%)",
-                                          style: CustomTextStyles.text14w400,
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        CustomTextFormField(
-                                          width: 148.w,
-                                          controller: percentageController,
-                                          borderDecoration:
-                                              TextFormFieldStyleHelper
-                                                  .outlineOnErrorTL25,
-                                          filled: true,
-                                          fillColor: theme
-                                              .colorScheme.onPrimaryContainer
-                                              .withOpacity(1),
-                                        ),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsets.only(
-                                          top: 34.h, bottom: 12.h),
-                                      child: Text(
-                                        "=",
-                                        style: CustomTextStyles.text14w400,
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          "Price",
-                                          style: CustomTextStyles.text14w400,
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        CustomTextFormField(
-                                          width: 148.w,
-                                          controller: discountPriceController,
-                                          borderDecoration:
-                                              TextFormFieldStyleHelper
-                                                  .outlineOnErrorTL25,
-                                          filled: true,
-                                          fillColor: theme
-                                              .colorScheme.onPrimaryContainer
-                                              .withOpacity(1),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 24.h),
+                           
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [

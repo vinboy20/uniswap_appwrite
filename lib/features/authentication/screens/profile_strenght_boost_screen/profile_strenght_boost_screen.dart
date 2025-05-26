@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:uniswap/common/widgets/button/custom_pill_button.dart';
-import 'package:uniswap/controllers/auth_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/features/authentication/screens/bvn_screen/bvn_screen.dart';
 import 'package:uniswap/features/authentication/screens/profile_form_screen/profile_form_screen.dart';
@@ -11,9 +10,7 @@ import 'package:uniswap/features/authentication/screens/profile_strenght_boost_s
 import 'package:uniswap/features/authentication/screens/profile_strenght_boost_screen/widgets/userprofile_item_widget.dart';
 
 class ProfileStrenghtBoostScreen extends StatelessWidget {
-  ProfileStrenghtBoostScreen({super.key});
-
-  final controller = Get.put(AuthController());
+  const ProfileStrenghtBoostScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

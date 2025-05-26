@@ -8,7 +8,6 @@ import 'package:uniswap/core/utils/credentials.dart';
 import 'package:uniswap/data/saved_data.dart';
 import 'package:uniswap/features/home/screens/profile/widget/profile_nav.dart';
 import 'package:uniswap/features/personalization/screen/my_uploads_screen/my_uploads_screen.dart';
-import 'package:uniswap/features/personalization/screen/notification/notification_screen.dart';
 import 'package:uniswap/features/personalization/screen/profile_screen/profile_form_update_screen/profile_form_update_screen.dart';
 import 'package:uniswap/features/personalization/screen/ratings_screen/ratings_screen.dart';
 import 'package:uniswap/features/personalization/screen/settings_screen/settings_screen.dart';

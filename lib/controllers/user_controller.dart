@@ -22,18 +22,30 @@ class UserController extends GetxController {
   final String reportsCollectionId = Credentials.reportsCollectionId;
   var userId = RxString('');
 
-  @override
-  void onInit() {
-    super.onInit();
-    fetchUserId();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   fetchUserData();
+  // }
 
-  Future<void> fetchUserId() async {
-    final id = await appwriteController.getCurrentUserId();
-    if (id != null) {
-      userId.value = id;
-    }
-  }
+  // Future<void> fetchUserData() async {
+  //   final id = await appwriteController.getCurrentUserId();
+  //   if (id != null) {
+  //      try {
+  //       final document = await databases.getDocument(
+  //         databaseId: databaseId,
+  //         collectionId: userCollectionId,
+  //         documentId: id,
+  //       );
+  //       await SavedData.saveUserData(document.data);
+  //       // return UserModel.fromJson(document.data);
+  //       print("User data fetched successfully: ${document.data}");
+  //     } catch (e) {
+  //       print("Error fetching user by ID: $e");
+  //       return null;
+  //     }
+  //   }
+  // }
 
   // Get user by ID
   Future<UserModel?> getUserById(dynamic userId) async {
@@ -43,12 +55,27 @@ class UserController extends GetxController {
         collectionId: userCollectionId,
         documentId: userId,
       );
+     
       return UserModel.fromJson(document.data);
     } catch (e) {
       print("Error fetching user by ID: $e");
       return null;
     }
   }
+  // Future<UserModel?> getUserData(dynamic userId) async {
+  //   try {
+  //     final document = await databases.getDocument(
+  //       databaseId: databaseId,
+  //       collectionId: userCollectionId,
+  //       documentId: userId,
+  //     );
+  //     await SavedData.saveUserData(document.data);
+  //     return UserModel.fromJson(document.data);
+  //   } catch (e) {
+  //     print("Error fetching user by ID: $e");
+  //     return null;
+  //   }
+  // }
 
   // Delete the user's account
   Future<void> deleteAccount() async {

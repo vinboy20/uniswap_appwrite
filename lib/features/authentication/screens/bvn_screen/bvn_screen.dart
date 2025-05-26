@@ -17,8 +17,7 @@ class BvnScreen extends StatefulWidget {
 
 class _BvnScreenState extends State<BvnScreen> {
 
-  final controller = Get.put(AuthController());
-
+  final controller = Get.find<AuthController>();
  
   @override
   Widget build(BuildContext context) {

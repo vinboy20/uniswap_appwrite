@@ -29,7 +29,7 @@ class ChoseAvatarScreen extends StatelessWidget {
 
   final storage = GetStorage();
   // String? selectedImage;
-  final AuthController signupController = Get.put(AuthController());
+  final AuthController signupController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {

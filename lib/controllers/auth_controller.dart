@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -20,12 +21,11 @@ import 'package:uniswap/features/authentication/screens/profile_strenght_boost_s
 import 'package:uniswap/features/authentication/screens/signin/sign_in_screen.dart';
 import 'package:uniswap/features/home/screens/home_container/home_container.dart';
 import 'package:uniswap/models/user.dart';
-import 'package:uniswap/models/wallet_model.dart';
 
 class AuthController extends GetxController {
   AuthController get instance => Get.find();
   final Account account = Account(Get.find<Client>()); // Use Get.find<Client>()
-  // final Storage storage = Storage(Get.find<Client>());
+  final Databases databases = Databases(Get.find<Client>()); // Use Get.find<Client>()
   final DatabaseController dataController = Get.put(DatabaseController());
 
   /// Variables
@@ -87,7 +87,7 @@ class AuthController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         EasyLoading.dismiss();
-         TLoaders.errorSnackBar(title: 'Oh Snap!', message: "no internet connection");
+        TLoaders.errorSnackBar(title: 'Oh Snap!', message: "no internet connection");
         return;
       }
 
@@ -103,24 +103,12 @@ class AuthController extends GetxController {
         password: password.text.trim(),
         name: name.text.trim(),
       );
-      
+
       final newUser = UserModel(
         name: name.text.trim(),
         email: email.text.trim(),
         userId: user.$id,
       );
-
-      // final newWallet = WalletModel(
-      //   balance: "0",
-      //   userId: user.$id,
-      // );
-      final newWallet = WalletModel(
-        docId: user.$id, // Explicitly set docId to userId
-        userId: user.$id,
-        balance: "0.00",
-        escrowBalance: "0.00",
-      );
-     
 
       await account.createEmailPasswordSession(
         email: email.text.trim(),
@@ -128,10 +116,8 @@ class AuthController extends GetxController {
       );
       await dataController.saveUserRecord(newUser);
 
-      await dataController.createUserWallet(newWallet);
-
       SavedData.saveUserId(user.$id);
-      // dataController.getUserData();
+
       // Remove loader
       EasyLoading.dismiss();
 
@@ -151,12 +137,11 @@ class AuthController extends GetxController {
 
   // Login User
   Future loginUser() async {
-    try {
-      // Delete current session if it exists
-     await account.deleteSession(sessionId: 'current');
+    //   // Delete current session if it exists
+    final bool login = await checkSessions();
+    if (login) {
+      await account.deleteSession(sessionId: 'current');
       await SavedData.clearUserData();
-    } catch (e) {
-      print('No session to delete $e');
     }
     try {
       EasyLoading.show(status: 'We are processing your information...');
@@ -175,12 +160,25 @@ class AuthController extends GetxController {
         email: email.text.trim(),
         password: password.text.trim(),
       );
-
       SavedData.saveUserId(user.userId);
-      // print(user.userId);
-      dataController.getUserData();
+      if (user.userId == null) {
+        print("no user id found");
+        return;
+      } else {
+        final userData = await databases.getDocument(
+          databaseId: Credentials.databaseId,
+          collectionId: Credentials.usersCollectonId,
+          documentId: user.userId,
+        );
+
+        SavedData.saveUserData(userData.data);
+        // print(user.userId);
+        // print(userData.data);
+      }
+
       EasyLoading.dismiss();
       Get.off(() => HomeContainer());
+
       return true;
     } on AppwriteException catch (e) {
       EasyLoading.dismiss();
@@ -191,11 +189,16 @@ class AuthController extends GetxController {
     }
   }
 
-  // Logout the user
   Future logoutUser() async {
-    await account.deleteSession(sessionId: 'current');
-    await SavedData.clearUserData();
-    Get.offAll(() => const SignInScreen());
+    try {
+      await account.deleteSession(sessionId: 'current');
+      await SavedData.clearUserData();
+      Get.offAll(() => const SignInScreen());
+    } catch (e) {
+      // Handle error, show message or retry
+      print('Logout failed: $e');
+      // Optionally show a snackbar or dialog to inform the user
+    }
   }
 
 // check if user have an active session or not
@@ -205,6 +208,15 @@ class AuthController extends GetxController {
       return true;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<Session?> checkSession() async {
+    try {
+      final user = await account.getSession(sessionId: 'current');
+      return user;
+    } catch (e) {
+      return null;
     }
   }
 

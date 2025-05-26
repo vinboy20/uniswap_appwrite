@@ -8,7 +8,7 @@ import 'package:uniswap/features/shop/event/ticket_screen/ticket_screen.dart';
 import 'package:uniswap/features/shop/screen/category_screen/category_screen.dart';
 
 Widget categoryWidget(BuildContext context) {
-  final ProductController productController = Get.put(ProductController());
+  final ProductController productController = Get.find<ProductController>();
   return Obx(() {
     if (productController.isLoading.value) {
       return const Center(child: CircularProgressIndicator());
@@ -70,24 +70,25 @@ Widget categoryWidget(BuildContext context) {
                         opacity: 0.5,
                             
                         // ${import.meta.env.VITE_APPWRITE_ENDPOINT}/storage/buckets/${storageBucketId}/files/${uploadedFile.$id}/view?project=${import.meta.env.VITE_APPWRITE_PROJECT_ID}&project=${import.meta.env.VITE_APPWRITE_PROJECT_ID}&mode=admin`
-                        child: Image.network(
-                          "${Credentials.apiEndpoint}/storage/buckets/${Credentials.categoryBucketId}/files/${category.imageId}/view?project=${Credentials.projectID}&mode=admin",
-                          headers: {"Origin": "*"}, // Add this line
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return CircularProgressIndicator();
-                          },
-                          height: 25.h,
-                          width: 25.w,
-                          errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
-                        ),
-
-                        // child:  FilePreviewImage(
-                        //   bucketId: Credentials.userBucketId,
-                        //   fileId: category.imageId ?? '',
+                        // child: Image.network(
+                        //   // "${Credentials.apiEndpoint}/storage/buckets/${Credentials.categoryBucketId}/files/${category.imageId}/view?project=${Credentials.projectID}&mode=admin",
+                        //   category.image ?? '',
+                        //   headers: {"Origin": "*"}, // Add this line
+                        //   loadingBuilder: (context, child, loadingProgress) {
+                        //     if (loadingProgress == null) return child;
+                        //     return CircularProgressIndicator();
+                        //   },
                         //   height: 25.h,
-                        //  width: 25.w,
+                        //   width: 25.w,
+                        //   errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
                         // ),
+
+                        child:  FilePreviewImage(
+                          bucketId: Credentials.categoryBucketId,
+                          fileId: category.imageId ?? '',
+                          height: 25.h,
+                         width: 25.w,
+                        ),
 
                        
                       ),

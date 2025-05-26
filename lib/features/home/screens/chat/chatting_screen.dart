@@ -32,7 +32,7 @@ class _ChattingScreenState extends State<ChattingScreen> {
   bool isSelectedSwitch = false;
 
   final DatabaseController controller = Get.put(DatabaseController());
-  final ChatController chatController = Get.put(ChatController());
+  final ChatController chatController =  Get.put(ChatController());
   final UserController userController = Get.put(UserController());
   final TextEditingController messageController = TextEditingController();
 

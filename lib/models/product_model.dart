@@ -10,14 +10,14 @@ class ProductModel {
   String? categoryName;
   String? subcategoryName;
   String? startPrice;
-  String? percentage;
-  String? discountPrice;
+  // String? percentage;
+  // String? discountPrice;
   String? bidEndDate;
   String? bidEndTime;
   String? location;
   String? phone;
   String? description;
-  String? productQty;
+  // String? productQty;
   String? moreSpec;
   bool? isApproved = false;
   bool? status = false;
@@ -34,14 +34,14 @@ class ProductModel {
     this.startPrice,
     this.categoryName,
     this.subcategoryName,
-    this.percentage,
-    this.discountPrice,
+    // this.percentage,
+    // this.discountPrice,
     this.bidEndDate,
     this.bidEndTime,
     this.location,
     this.phone,
     this.description,
-    this.productQty,
+    // this.productQty,
     this.moreSpec,
     this.isApproved,
     this.status,
@@ -60,14 +60,14 @@ class ProductModel {
     startPrice = json['startPrice'];
     categoryName = json['categoryName'];
     subcategoryName = json['subcategoryName'];
-    percentage = json['percentage'];
-    discountPrice = json['discountPrice'];
+    // percentage = json['percentage'];
+    // discountPrice = json['discountPrice'];
     bidEndDate = json['bidEndDate'];
     bidEndTime = json['bidEndTime'];
     location = json['location'];
     phone = json['phone'];
     description = json['description'];
-    productQty = json['productQty'];
+    // productQty = json['productQty'];
     moreSpec = json['moreSpec'];
     isApproved = json['isApproved'];
     status = json['status'];
@@ -87,14 +87,14 @@ class ProductModel {
     data['startPrice'] = startPrice;
     data['subcategoryName'] = subcategoryName;
     data['categoryName'] = categoryName;
-    data['percentage'] = percentage;
-    data['discountPrice'] = discountPrice;
+    // data['percentage'] = percentage;
+    // data['discountPrice'] = discountPrice;
     data['bidEndDate'] = bidEndDate;
     data['bidEndTime'] = bidEndTime;
     data['location'] = location;
     data['phone'] = phone;
     data['description'] = description;
-    data['productQty'] = productQty;
+    // data['productQty'] = productQty;
     data['moreSpec'] = moreSpec;
     data['isApproved'] = isApproved;
     data['status'] = status;
@@ -116,12 +116,12 @@ class ProductModel {
       startPrice: "",
       subcategoryName: '',
       categoryName: '',
-      percentage: "",
-      discountPrice: "",
+      // percentage: "",
+      // discountPrice: "",
       bidEndDate: "",
       bidEndTime: "",
       location: "",
-      productQty:"",
+      // productQty:"",
       description: "",
       moreSpec: "",
       status: false,

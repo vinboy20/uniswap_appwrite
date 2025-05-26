@@ -21,7 +21,7 @@ class MyWishListScreen extends StatefulWidget {
 }
 
 class _MyWishListScreenState extends State<MyWishListScreen> {
-  final controller = Get.put(ProductController());
+  final controller = Get.find<ProductController>();
   final wishcontroller = Get.put(WishController());
   @override
   Widget build(BuildContext context) {

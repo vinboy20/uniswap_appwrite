@@ -15,6 +15,7 @@ import 'package:uniswap/models/wallet_model.dart';
 class ProductController extends GetxController {
   final Databases _databases = Databases(Get.find<Client>());
   final Storage _storage = Storage(Get.find<Client>());
+  final Realtime _realtime = Realtime(Get.find<Client>());
 
   // Reactive list to hold categories
   RxList<CategoryModel> categories = <CategoryModel>[].obs;
@@ -25,6 +26,7 @@ class ProductController extends GetxController {
   RxList<BidModel> userBids = <BidModel>[].obs;
   RxList<WalletModel> wallet = <WalletModel>[].obs;
   RxList<TransactionModel> transaction = <TransactionModel>[].obs;
+
 
   // Collection and database IDs from credentials
   final String categoryCollectionId = Credentials.categoryCollectionId;
@@ -37,21 +39,75 @@ class ProductController extends GetxController {
   // Loading state
   RxBool isLoading = false.obs;
 
+ // Store subscriptions
+  late final RealtimeSubscription categoriesSub;
+  late final RealtimeSubscription productsSub;
+  late final RealtimeSubscription bidsSub;
+  late final RealtimeSubscription walletSub;
+  late final RealtimeSubscription transactionsSub;
+
   @override
   void onInit() {
     super.onInit();
-    fetchCategories(); // Fetch categories when the controller is initialized
-    fetchSubCategories();
-    fetchProducts();
-    final userId = SavedData.getUserId();
-    fetchUserBids();
-    // Execute both in parallel for efficiency
-    // Future.wait([
-    fetchWalletData(userId);
-    fetchTransactionData(userId);
-    // ]);
+    fetchInitialData();
+    _setupRealtimeSubscriptions();
   }
 
+  @override
+  void onClose() {
+    // Close all subscriptions
+    categoriesSub.close();
+    productsSub.close();
+    bidsSub.close();
+    walletSub.close();
+    transactionsSub.close();
+    super.onClose();
+  }
+
+   Future<void> fetchInitialData() async {
+    await Future.wait([
+      fetchCategories(),
+      fetchSubCategories(),
+      fetchProducts(),
+      fetchUserBids(),
+      // fetchWalletData(SavedData.getUserId()),
+      // fetchTransactionData(SavedData.getUserId()),
+    ]);
+  }
+
+  void _setupRealtimeSubscriptions() {
+    // Categories subscription
+    categoriesSub = _realtime.subscribe(['databases.${Credentials.databaseId}.collections.${Credentials.categoryCollectionId}.documents']);
+
+    categoriesSub.stream.listen((event) {
+      if (event.events.contains('databases.*.collections.*.documents.*.create') || event.events.contains('databases.*.collections.*.documents.*.update') || event.events.contains('databases.*.collections.*.documents.*.delete')) {
+        fetchCategories();
+      }
+    });
+
+    // Products subscription
+    // productsSub = _realtime.subscribe(['databases.${Credentials.databaseId}.collections.${Credentials.productCollectionId}.documents']);
+     productsSub = _realtime.subscribe(['databases.$databaseId.collections.$productCollectionId.documents']);
+    
+    productsSub.stream.listen((event) {
+      if (event.events.contains('databases.*.collections.*.documents.*.create') || 
+      event.events.contains('databases.*.collections.*.documents.*.update') || 
+      event.events.contains('databases.*.collections.*.documents.*.delete')) {
+        fetchProducts();
+      }
+    });
+
+    // Bids subscription
+    bidsSub = _realtime.subscribe(['databases.${Credentials.databaseId}.collections.${Credentials.bidCollectionId}.documents']);
+
+    bidsSub.stream.listen((event) {
+      if (event.events.contains('databases.*.collections.*.documents.*.create') || event.events.contains('databases.*.collections.*.documents.*.update') || event.events.contains('databases.*.collections.*.documents.*.delete')) {
+        fetchUserBids();
+      }
+    });
+
+    
+  }
   // Fetch categories from the database
   Future<void> fetchCategories() async {
     try {
@@ -95,9 +151,7 @@ class ProductController extends GetxController {
       final response = await _databases.listDocuments(
         databaseId: databaseId,
         collectionId: productCollectionId,
-        queries: [
-          Query.orderDesc('\$createdAt')
-        ],
+        queries: [Query.orderDesc('\$createdAt')],
       );
       // Map the fetched documents to ProductModel
       products.value = response.documents.map((doc) => ProductModel.fromJson(doc.data)).toList();
@@ -122,6 +176,8 @@ class ProductController extends GetxController {
     }
   }
 
+  
+  // upload image with fileId
   Future<String?> uploadImage(String bucketId, XFile image) async {
     try {
       final fileUpload = await _storage.createFile(
@@ -202,6 +258,7 @@ class ProductController extends GetxController {
     }
   }
 
+// Save or update a bid for a product
   Future<void> saveOrUpdateBid(String productId, BidModel bid) async {
     try {
       // Fetch all bids for the product
@@ -263,7 +320,6 @@ class ProductController extends GetxController {
     }
   }
 
-  
   // Fetch current user bids
   Future<void> fetchUserBids() async {
     try {
@@ -384,7 +440,7 @@ class ProductController extends GetxController {
             Query.equal('sellerId', userId), // Transactions where user is seller
             Query.equal('userId', userId),
           ]),
-         Query.orderDesc('\$createdAt')
+          Query.orderDesc('\$createdAt')
         ],
       );
 
@@ -399,5 +455,4 @@ class ProductController extends GetxController {
       isLoading(false);
     }
   }
-
 }

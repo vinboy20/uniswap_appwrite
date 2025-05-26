@@ -13,9 +13,9 @@ class CategoryModel {
 
   CategoryModel.fromJson(Map<String, dynamic> json) {
     docId = json['\$id'];
-    title = json['title'];
-    image = json['image'];
-    imageId = json['imageId'];
+    title = json['title'] ?? '';
+    image = json['image'] ?? '';
+    imageId = json['imageId'] ?? '';
   }
 
   Map<String, dynamic> toJson() {

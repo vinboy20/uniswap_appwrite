@@ -15,7 +15,7 @@ class ChangePasswordScreen extends StatefulWidget {
 }
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find<AuthController>();
   // Initialize AuthController
   final TextEditingController currentPasswordController = TextEditingController();
 

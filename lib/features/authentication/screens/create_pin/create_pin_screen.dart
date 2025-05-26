@@ -17,7 +17,7 @@ class CreatePinScreen extends StatefulWidget {
 }
 
 class _CreatePinScreenState extends State<CreatePinScreen> {
-  final AuthController signupController = Get.put(AuthController());
+  final AuthController signupController = Get.find<AuthController>();
   final storage = GetStorage();
 
   @override

@@ -868,3 +868,77 @@ class _InputPinScreenState extends State<InputPinScreen> {
     );
   }
 }
+
+
+ Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Discounts (optional)",
+                                  style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF475569)),
+                                ),
+                                SizedBox(height: 24.h),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Percentage (%)",
+                                          style: CustomTextStyles.text14w400,
+                                        ),
+                                        SizedBox(height: 4.h),
+                                        CustomTextFormField(
+                                          width: 148.w,
+                                          controller: percentageController,
+                                          borderDecoration:
+                                              TextFormFieldStyleHelper
+                                                  .outlineOnErrorTL25,
+                                          filled: true,
+                                          fillColor: theme
+                                              .colorScheme.onPrimaryContainer
+                                              .withOpacity(1),
+                                        ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 34.h, bottom: 12.h),
+                                      child: Text(
+                                        "=",
+                                        style: CustomTextStyles.text12w400,
+                                      ),
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Price",
+                                          style: CustomTextStyles.text12w400,
+                                        ),
+                                        SizedBox(height: 4.h),
+                                        CustomTextFormField(
+                                          width: 148.w,
+                                          controller: discountPriceController,
+                                          borderDecoration:
+                                              TextFormFieldStyleHelper
+                                                  .outlineOnErrorTL25,
+                                          filled: true,
+                                          fillColor: theme
+                                              .colorScheme.onPrimaryContainer
+                                              .withOpacity(1),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          

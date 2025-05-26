@@ -8,7 +8,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:uniswap/common/widgets/appbar/appbar.dart';
 import 'package:uniswap/common/widgets/button/custom_outlined_button.dart';
 import 'package:uniswap/common/widgets/image_preview_widget.dart';
-import 'package:uniswap/common/widgets/loaders/shimmer.dart';
 import 'package:uniswap/controllers/user_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/credentials.dart';
@@ -26,13 +25,12 @@ class ItemDecriptionScreen extends StatefulWidget {
   const ItemDecriptionScreen({super.key, required this.product});
 
   final ProductModel product;
-
   @override
   State<ItemDecriptionScreen> createState() => _ItemDecriptionScreenState();
 }
 
 class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
-  final controller = Get.put(ProductController());
+  final controller = Get.find<ProductController>();
   final userController = Get.put(UserController());
   TextEditingController moreSpecsController = TextEditingController();
 
@@ -47,7 +45,7 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
     super.initState();
     // Fetch user details when the screen is initialized
     _fetchUserDetails();
-    print(_userDetails);
+    // print(_userDetails);
   }
 
   void shareContent() {
@@ -114,30 +112,30 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                     ),
                     itemCount: images?.length,
                     itemBuilder: (context, index, realIndex) {
-                      // return FilePreviewImage(
-                      //   bucketId: Credentials.productBucketId,
-                      //   fileId: images?[index],
-                      //   width: double.maxFinite,
-                      //   height: 241.h,
-                      //   isCircular: false,
-                      //   imageborderRadius: BorderRadius.zero,
-                      // );
-                      return Image.network(
-                        "${Credentials.imageApiEndpoint}/storage/buckets/${Credentials.productBucketId}/files/${images?[index]}/view?project=${Credentials.projectID}&mode=admin",
-                        headers: {"Origin": "*"}, // Add this line
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return TShimmerEffect(
-                            width: double.maxFinite,
-                            height: 241.h,
-                            // radius: borderRadius,
-                          );
-                        },
+                      return FilePreviewImage(
+                        bucketId: Credentials.productBucketId,
+                        fileId: images?[index],
                         width: double.maxFinite,
                         height: 241.h,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+                        isCircular: false,
+                        imageborderRadius: BorderRadius.zero,
                       );
+                      // return Image.network(
+                      //   "${Credentials.imageApiEndpoint}/storage/buckets/${Credentials.productBucketId}/files/${images?[index]}/view?project=${Credentials.projectID}&mode=admin",
+                      //   headers: {"Origin": "*"}, // Add this line
+                      //   loadingBuilder: (context, child, loadingProgress) {
+                      //     if (loadingProgress == null) return child;
+                      //     return TShimmerEffect(
+                      //       width: double.maxFinite,
+                      //       height: 241.h,
+                      //       // radius: borderRadius,
+                      //     );
+                      //   },
+                      //   width: double.maxFinite,
+                      //   height: 241.h,
+                      //   fit: BoxFit.cover,
+                      //   errorBuilder: (context, error, stackTrace) => Icon(Icons.error),
+                      // );
                     },
                   ),
                 ),
@@ -200,7 +198,7 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                       SizedBox(height: 20.h),
                       // bid section
                       Visibility(
-                        visible: widget.product.isBid == true,
+                        visible: widget.product.isBid == true && widget.product.userId != SavedData.getUserId(),
                         // visible: isBid!,
                         child: Column(
                           children: [
@@ -347,6 +345,21 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                           buttonStyle: TAppDecoration.softDark,
                           buttonTextStyle: CustomTextStyles.text14w400cPrimary,
                           onPressed: () async {
+                           final user = SavedData.getUserData();
+                            if (user == null) {
+                              TLoaders.errorSnackBar(
+                                title: "Error",
+                                message: "Please login to make payment",
+                              );
+                              return;
+                            }
+                            if(user['isValidated'] == false) {
+                              TLoaders.errorSnackBar(
+                                title: "Error",
+                                message: "Your account is not validated. Please contact support.",
+                              );
+                              return;
+                            }
                             await showDialog(
                               context: context,
                               builder: (BuildContext context) => SimpleDialog(
@@ -360,7 +373,7 @@ class _ItemDecriptionScreenState extends State<ItemDecriptionScreen> {
                           },
                         )
                       else
-                        SizedBox(height: 0.h),
+                        SizedBox.shrink(),
                     ],
                   ),
                 ),

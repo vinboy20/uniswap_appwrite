@@ -22,7 +22,7 @@ class SubCategoryScreen extends StatefulWidget {
 }
 
 class _SubCategoryScreenState extends State<SubCategoryScreen> {
-  final ProductController productController = Get.put(ProductController());
+  final ProductController productController = Get.find<ProductController>();
   final Map<int, bool> likedProducts = {};
 
 //   @override

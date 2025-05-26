@@ -6,7 +6,6 @@ import 'package:uniswap/common/widgets/button/custom_elevated_button.dart';
 import 'package:uniswap/common/widgets/button/custom_outlined_button.dart';
 import 'package:uniswap/common/widgets/images/image_url.dart';
 import 'package:uniswap/common/widgets/notification/notifications.dart';
-import 'package:uniswap/controllers/payment_controller.dart';
 import 'package:uniswap/controllers/product_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/formatters/formatter.dart';
@@ -25,7 +24,7 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final amount = double.tryParse(notification.amount) ?? 0;
-    final ProductController productController = Get.put(ProductController());
+    final ProductController productController = Get.find<ProductController>();
     final ProductModel product = productController.products.firstWhere(
       (p) => p.docId == notification.metaProductId,
       orElse: () => ProductModel.empty(),
@@ -34,7 +33,7 @@ class NotificationScreen extends StatelessWidget {
     //   return const Center(child: Text("Product not found"));
     // }
     final code = notification.verificationCode ?? "";
-    final PaymentController paymentController = Get.put(PaymentController());
+    // final  MonnifyController controller = Get.find<MonnifyController>();
     final TextEditingController pinController = TextEditingController();
     return SafeArea(
       child: Scaffold(
@@ -192,12 +191,13 @@ class NotificationScreen extends StatelessWidget {
                                             }
                                             return null;
                                           },
-                                          onConfirm: () => paymentController.confirmDelivery(
-                                            transactionId: notification.transactionId,
-                                            verificationCode: pinController.text.trim(),
-                                            sellerId: notification.userId,
-                                            productId: product.docId ?? '',
-                                          ),
+                                          onConfirm: () {},
+                                        //   onConfirm: () => controller.confirmDelivery(
+                                        //     transactionId: notification.transactionId,
+                                        //     verificationCode: pinController.text.trim(),
+                                        //     sellerId: notification.userId,
+                                        //     productId: product.docId ?? '',
+                                        //   ),
                                         )
                                       ],
                                     ),

@@ -24,6 +24,7 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]);
   Get.put(AppwriteController()); // Initialize Appwrite in the controller
+  //
   ThemeHelper().changeTheme('primary');
   configLoading();
   await GetStorage.init();

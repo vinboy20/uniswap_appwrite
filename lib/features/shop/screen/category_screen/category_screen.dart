@@ -22,7 +22,7 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
-  final ProductController productController = Get.put(ProductController());
+  final ProductController productController = Get.find<ProductController>();
  
   @override
   Widget build(BuildContext context) {

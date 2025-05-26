@@ -10,7 +10,6 @@ import 'package:uniswap/models/bid_model.dart';
 import 'package:uniswap/features/shop/screen/item_decription_screen/widgets/bid_amount.dart';
 import 'package:uniswap/features/shop/screen/item_decription_screen/widgets/bid_time_widget.dart';
 
-
 class BidWidget extends StatefulWidget {
   const BidWidget({
     super.key,
@@ -30,7 +29,7 @@ class BidWidget extends StatefulWidget {
 }
 
 class _BidWidgetState extends State<BidWidget> {
-  final controller = Get.put(ProductController());
+  final controller = Get.find<ProductController>();
   final TextEditingController _bidAmountController = TextEditingController();
   String? _selectedBidAmount; // Track the selected bid amount
   bool isCustomAmount = false; // Track if the user is entering a custom amount
@@ -52,7 +51,6 @@ class _BidWidgetState extends State<BidWidget> {
 
   // Fetch the highest bid and number of bidders
   Future<void> _fetchBidData() async {
-    
     // Fetch the highest bid
     final highestBid = await controller.getHighestBid(widget.productId);
 
@@ -66,65 +64,63 @@ class _BidWidgetState extends State<BidWidget> {
   }
 
   Future<void> _submitBid(BuildContext context) async {
-  // Get the bid amount
-  final bidAmount = _selectedBidAmount ?? _bidAmountController.text;
-  if (bidAmount.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Please enter a bid amount")),
+    // Get the bid amount
+    final bidAmount = _selectedBidAmount ?? _bidAmountController.text;
+    if (bidAmount.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Please enter a bid amount")),
+      );
+      return;
+    }
+
+    // Parse the bid amount (remove non-numeric characters)
+    final parsedBidAmount = int.tryParse(bidAmount.replaceAll(RegExp(r'[^0-9]'), ''));
+    if (parsedBidAmount == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid bid amount. Please enter a valid number.")),
+      );
+      return;
+    }
+
+    // final bool isLoggedIn = box.read('isLoggedIn') ?? false;
+    // String? userId = box.read('userId');
+    String? userId = SavedData.getUserId();
+
+    // Validate product ID
+    if (widget.productId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Invalid product. Please try again.")),
+      );
+      return;
+    }
+
+    // Create a BidModel
+    final bid = BidModel(
+      userId: userId, // Ensure userID is not null
+      amount: parsedBidAmount, // Use the parsed bid amount
     );
-    return;
+
+    try {
+      // Save the bid to the database
+      await controller.saveOrUpdateBid(widget.productId, bid);
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Bid placed successfully!")),
+      );
+
+      // Refresh the bid data
+      await _fetchBidData();
+
+      // Close the dialog
+      Navigator.of(context).pop();
+    } catch (e) {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to place bid: ${e.toString()}")),
+      );
+    }
   }
-
-  // Parse the bid amount (remove non-numeric characters)
-  final parsedBidAmount = int.tryParse(bidAmount.replaceAll(RegExp(r'[^0-9]'), ''));
-  if (parsedBidAmount == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Invalid bid amount. Please enter a valid number.")),
-    );
-    return;
-  }
-
-
-  // final bool isLoggedIn = box.read('isLoggedIn') ?? false;
-      // String? userId = box.read('userId');
-      String? userId = SavedData.getUserId();
-
-
-  // Validate product ID
-  if (widget.productId.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Invalid product. Please try again.")),
-    );
-    return;
-  }
-
-  // Create a BidModel
-  final bid = BidModel(
-    userId: userId, // Ensure userID is not null
-    amount: parsedBidAmount, // Use the parsed bid amount
-  );
-
-  try {
-    // Save the bid to the database
-    await controller.saveOrUpdateBid(widget.productId, bid);
-
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Bid placed successfully!")),
-    );
-
-    // Refresh the bid data
-    await _fetchBidData();
-
-    // Close the dialog
-    Navigator.of(context).pop();
-  } catch (e) {
-    // Show error message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Failed to place bid: ${e.toString()}")),
-    );
-  }
-}
 
   @override
   Widget build(BuildContext context) {

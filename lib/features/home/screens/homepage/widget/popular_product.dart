@@ -19,7 +19,7 @@ class PopularProduct extends StatefulWidget {
 }
 
 class _PopularProductState extends State<PopularProduct> {
-  final controller = Get.put(ProductController());
+  final controller = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +69,7 @@ class _PopularProductState extends State<PopularProduct> {
           crossAxisSpacing: 22,
         ),
         physics: const NeverScrollableScrollPhysics(),
-        itemCount: min(myProduct.length, 6),
+        itemCount: min(myProduct.length, 10),
         itemBuilder: (context, index) {
           final singleProduct = myProduct[index];
           final List? images = singleProduct.image;

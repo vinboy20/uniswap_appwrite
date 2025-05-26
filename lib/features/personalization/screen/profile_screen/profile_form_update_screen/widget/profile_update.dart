@@ -23,13 +23,13 @@ class ProfileUpdate extends StatefulWidget {
 }
 
 class _ProfileUpdateState extends State<ProfileUpdate> {
-  final controller = Get.put(AuthController());
+  final controller = Get.find<AuthController>();
 
   XFile? _pickedImage;
   bool profileLoading = false;
 
   GlobalKey<FormState> updateFormKey = GlobalKey<FormState>();
-  final DatabaseController dataController = Get.put(DatabaseController());
+  final DatabaseController dataController = Get.find<DatabaseController>();
 
   late final String email;
   late String username;

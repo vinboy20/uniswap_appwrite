@@ -11,7 +11,6 @@ import 'package:uniswap/core/utils/helpers/loaders.dart';
 import 'package:uniswap/data/saved_data.dart';
 import 'package:uniswap/models/transaction_model.dart';
 import 'package:uniswap/models/user.dart';
-import 'package:uniswap/models/wallet_model.dart';
 
 class DatabaseController extends GetxController {
   static DatabaseController get instance => Get.find();
@@ -46,11 +45,7 @@ class DatabaseController extends GetxController {
   //   }
   // }
 
-  Stream<RealtimeMessage> subscribeToChat() {
-    return realtime.subscribe(['databases.$databaseId.collections.$chatCollectionId.documents']).stream;
-  }
-
-  // Stream<RealtimeMessage> subscribeToChat(String userId, String receiverId) {
+  // Stream<RealtimeMessage> subscribeToChat() {
   //   return realtime.subscribe(['databases.$databaseId.collections.$chatCollectionId.documents']).stream;
   // }
 
@@ -72,49 +67,30 @@ class DatabaseController extends GetxController {
       throw 'An unexpected error occurred. Please try again.';
     }
   }
-
-  // Create userWallet during registration
-  // Future<void> createUserWallet(WalletModel wallet) async {
-  //   try {
-  //     await databases.createDocument(
-  //       databaseId: databaseId,
-  //       collectionId: walletCollectionId,
-  //       documentId: wallet.userId.toString(),
-  //       data: wallet.toJson(),
-  //     );
-  //   } on AppwriteException catch (e) {
-  //     throw TAppwriteException(e.message.toString()).message;
-  //   } on FormatException {
-  //     throw const TFormatException();
-  //   } on PlatformException catch (e) {
-  //     throw TPlatformException(e.code).message;
-  //   } catch (_) {
-  //     throw 'An unexpected error occurred. Please try again.';
-  //   }
-  // }
-
-  Future<void> createUserWallet(WalletModel wallet) async {
+  
+  Future<UserModel> getUserRecord(String userId) async {
     try {
-      await databases.createDocument(
+      final response = await databases.getDocument(
         databaseId: databaseId,
-        collectionId: walletCollectionId,
-        documentId: wallet.docId, // Use the docId from model
-        data: wallet.toJson(),
+        collectionId: userCollectionId,
+        documentId: userId,
       );
+      return UserModel.fromJson(response.data);
     } on AppwriteException catch (e) {
-      if (e.code == 409) {
-        // Document already exists
-        Get.log('Wallet already exists for user ${wallet.userId}');
-        return;
-      }
       throw TAppwriteException(e.message.toString()).message;
-    } catch (e) {
-      throw 'Failed to create wallet: ${e.toString()}';
+    } on FormatException {
+      throw const TFormatException();
+    } on PlatformException catch (e) {
+      throw TPlatformException(e.code).message;
+    } catch (_) {
+      throw 'An unexpected error occurred. Please try again.';
     }
   }
 
+ 
   Future<void> getUserData() async {
     final id = SavedData.getUserId();
+    
     print(id);
     try {
       final data = await databases.listDocuments(
@@ -129,7 +105,7 @@ class DatabaseController extends GetxController {
       final userData = data.documents[0].data;
 
       // Save the entire user data as a map
-      await SavedData.saveUserData(userData);
+      // await SavedData.saveUserData(userData);
 
       print("User data saved: $userData");
     } on AppwriteException catch (e) {
@@ -261,64 +237,7 @@ class DatabaseController extends GetxController {
     }
   }
 
-  // Chat Method
-
-  // Future<void> sendMessage(String senderId, String receiverId, String message) async {
-  //   try {
-  //     await databases.createDocument(
-  //       databaseId: databaseId,
-  //       collectionId: chatCollectionId,
-  //       documentId: 'unique()', // Auto-generate document ID
-  //       data: {
-  //         'senderId': senderId,
-  //         'receiverId': receiverId,
-  //         'message': message,
-  //         'timestamp': DateTime.now().toIso8601String(),
-  //       },
-  //     );
-  //   } catch (e) {
-  //     print('Error sending message: $e');
-  //   }
-  // }
-
-  // Future<List<Document>> getMessages(String userId1, String userId2) async {
-  //   try {
-  //     final response = await databases.listDocuments(databaseId: databaseId, collectionId: chatCollectionId, queries: [
-  //       // Query.or([Query.equal("senderId", userId1),
-  //       // Query.equal("receiverId", userId2)]),
-  //        Query.or([Query.equal("senderId", userId1), Query.equal("receiverId", userId2)]),
-  //       Query.orderAsc("timestamp"),
-  //       Query.limit(2000),
-  //     ]);
-  //     return response.documents;
-  //   } catch (e) {
-  //     print('Error fetching messages: $e');
-  //     return [];
-  //   }
-  // }
-
-  // Future<List<Document>> getAllChats() async {
-  //   try {
-  //     final userId = SavedData.getUserId();
-  //     final response = await databases.listDocuments(
-  //       databaseId: databaseId,
-  //       collectionId: chatCollectionId,
-  //       queries: [
-  //         // Query.equal('senderId', userId), // Chats where the user is the sender
-  //         // Query.equal('receiverId', userId), // Chats where the user is the receiver
-  //         Query.or([Query.equal("senderId", userId), Query.equal("receiverId", userId)]),
-  //         Query.orderDesc("timestamp"),
-  //         Query.limit(2000),
-  //       ],
-  //     );
-
-  //     return response.documents;
-  //   } catch (e) {
-  //     print('Error fetching chats: $e');
-  //     return [];
-  //   }
-  // }
-
+ 
   Future<void> submitRating({
     required String userId,
     required String raterId,

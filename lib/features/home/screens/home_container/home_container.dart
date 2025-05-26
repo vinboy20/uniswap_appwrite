@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:uniswap/common/widgets/bottom_bar/custom_bottom_bar.dart';
+import 'package:uniswap/controllers/user_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/features/home/screens/chat/chat_tab_container_screen.dart';
 import 'package:uniswap/features/home/screens/homepage/home_screen.dart';
@@ -7,7 +9,6 @@ import 'package:uniswap/features/home/screens/profile/my_profile_screen.dart';
 import 'package:uniswap/features/home/screens/swap/upload_item_page.dart';
 import 'package:uniswap/features/home/screens/wallet/virtual_wallet_screen.dart';
 import 'package:uniswap/routes/routes.dart';
-
 
 class HomeContainer extends StatefulWidget {
   const HomeContainer({super.key});
@@ -17,6 +18,14 @@ class HomeContainer extends StatefulWidget {
 }
 
 class _HomeContainerState extends State<HomeContainer> {
+  final UserController userController = Get.put(UserController());
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   userController.fetchUserData();
+  //   // Any initialization logic can go here
+  // }
+
   GlobalKey<NavigatorState> scaffoldKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
@@ -64,7 +73,6 @@ class _HomeContainerState extends State<HomeContainer> {
         return TRoutes.chat;
       case BottomBarEnum.Profile:
         return TRoutes.profile;
-      
     }
   }
 

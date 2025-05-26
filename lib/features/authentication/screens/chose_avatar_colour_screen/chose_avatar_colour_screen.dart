@@ -11,7 +11,7 @@ class ChoseAvatarColourScreen extends StatelessWidget {
   ChoseAvatarColourScreen({super.key, required this.selectedImage});
 
   final String selectedImage;
-  final controller = Get.put(AuthController());
+  final controller = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {

@@ -19,9 +19,10 @@ class _SigninFormState extends State<SigninForm> {
   bool rememberMe = false;
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(AuthController());
+    // ignore: no_leading_underscores_for_local_identifiers
+    final _controller = Get.put(AuthController());
     return Form(
-      key: controller.signinFormKey,
+      key: _controller.signinFormKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -29,7 +30,7 @@ class _SigninFormState extends State<SigninForm> {
           Text("Email address", style: CustomTextStyles.text14w400),
           SizedBox(height: 8.h),
           CustomTextFormField(
-            controller: controller.email,
+            controller: _controller.email,
             autofocus: false,
             textInputType: TextInputType.emailAddress,
             borderDecoration: TextFormFieldStyleHelper.outlineOnError,
@@ -44,17 +45,17 @@ class _SigninFormState extends State<SigninForm> {
           SizedBox(height: 8.h),
           Obx(
             () => CustomTextFormField(
-              controller: controller.password,
+              controller: _controller.password,
               autofocus: false,
               textInputType: TextInputType.text,
               textInputAction: TextInputAction.done,
               suffix: IconButton(
-                onPressed: () => controller.hidePassword.value = !controller.hidePassword.value,
-                icon: Icon(controller.hidePassword.value ? Icons.visibility : Icons.visibility_off),
+                onPressed: () => _controller.hidePassword.value = !_controller.hidePassword.value,
+                icon: Icon(_controller.hidePassword.value ? Icons.visibility : Icons.visibility_off),
                 color: Colors.grey[500],
               ),
               suffixConstraints: BoxConstraints(maxHeight: 56.h),
-              obscureText: controller.hidePassword.value,
+              obscureText: _controller.hidePassword.value,
               borderDecoration: TextFormFieldStyleHelper.outlineOnError,
               filled: true,
               fillColor: TColors.softGrey,
@@ -100,7 +101,7 @@ class _SigninFormState extends State<SigninForm> {
               text: "Log In",
               color: TColors.primary,
               onPressed: () {
-                controller.loginUser();
+                _controller.loginUser();
               }),
         ],
       ),

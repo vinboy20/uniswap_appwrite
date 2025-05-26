@@ -3,14 +3,12 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:uniswap/core/utils/credentials.dart';
-import 'package:uniswap/core/utils/helpers/loaders.dart';
-import 'package:uniswap/core/utils/helpers/network_manager.dart';
 import 'package:uniswap/models/user.dart';
 
 class AppwriteController extends GetxController {
   static AppwriteController get instance => Get.find();
 
-    // Variables
+  // Variables
   final box = GetStorage();
   final Client client = Client();
   late final Account account;
@@ -19,7 +17,15 @@ class AppwriteController extends GetxController {
   late final Realtime realtime;
 
   /// Getter for the currently authenticated user
-  var user = Rxn<UserModel>(); // Reactive user model (nullable)
+  // var user = Rxn<UserModel>(); // Reactive user model (nullable)
+  RxList<UserModel> user = <UserModel>[].obs;
+
+  final String databaseId = Credentials.databaseId; // Replace with your Database ID
+  final String userCollectionId = Credentials.usersCollectonId; // Replace with your Collection ID
+  final String identityCollectionId = Credentials.identificationCollectionId; // Replace with your Collection ID
+  final String walletCollectionId = Credentials.walletCollectionId; // Replace with your Collection ID
+  final String transactionCollectionId = Credentials.transactionCollectionId; // Replace with your Collection ID
+  final String chatCollectionId = Credentials.chatCollectionId;
 
   @override
   void onInit() {
@@ -39,42 +45,15 @@ class AppwriteController extends GetxController {
     realtime = Realtime(client);
   }
 
-  //  /// Fetch the current user's ID
-  // Future<String?> getCurrentUserId() async {
-  //   try {
-  //     final user = await account.get();
-  //     return user.$id; // Return the current user's ID
-  //   } catch (e) {
-  //     print('Error fetching user: $e');
-  //     return null;
-  //   }
-  // }
-
   final Connectivity _connectivity = Connectivity();
 
-  Future<bool> _checkInternetConnection() async {
+  Future<bool> checkInternetConnection() async {
     var connectivityResult = await _connectivity.checkConnectivity();
-    if (connectivityResult == ConnectivityResult.mobile ||
-        connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
       return true; // Connected to the internet
     } else {
       return false; // No internet connection
     }
   }
 
-  Future<String?> getCurrentUserId() async {
-    if (!await NetworkManager.instance.isConnected()) {
-    TLoaders.customToast(message: 'No internet connection');
-    return null;
-  }
-  try {
-    final userData = await account.get();
-    user.value = UserModel.fromJson(userData.toMap()); // Update reactive user
-    return userData.$id;
-  } catch (e) {
-    print('Error fetching user: $e');
-    user.value = null; // Clear user data on error
-    return null;
-  }
-}
 }

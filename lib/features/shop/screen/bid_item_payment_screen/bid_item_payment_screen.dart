@@ -13,6 +13,8 @@ import 'package:uniswap/controllers/user_controller.dart';
 import 'package:uniswap/core/app_export.dart';
 import 'package:uniswap/core/utils/credentials.dart';
 import 'package:uniswap/core/utils/helpers/loaders.dart';
+import 'package:uniswap/data/saved_data.dart';
+import 'package:uniswap/features/personalization/screen/profile_screen/profile_screen.dart';
 import 'package:uniswap/features/shop/screen/escrow_request_screen/escrow_request_screen.dart';
 import 'package:uniswap/models/user.dart';
 import 'package:uniswap/controllers/product_controller.dart';
@@ -28,7 +30,7 @@ class BidItemPaymentScreen extends StatefulWidget {
 }
 
 class _BidItemPaymentScreenState extends State<BidItemPaymentScreen> {
-  final controller = Get.put(ProductController());
+  final controller = Get.find<ProductController>();
   final userController = Get.put(UserController());
 
   UserModel? _userDetails;
@@ -52,9 +54,9 @@ class _BidItemPaymentScreenState extends State<BidItemPaymentScreen> {
     Share.share(shareText);
   }
 
-  Future<void> _fetchUserDetails() async {
+ Future<void> _fetchUserDetails() async {
     try {
-      final user = await userController.getUserById(widget.product.userId);
+      final user = await userController.getUserById(widget.product.userId ?? '');
       setState(() {
         _userDetails = user;
       });
@@ -197,14 +199,20 @@ class _BidItemPaymentScreenState extends State<BidItemPaymentScreen> {
                                   crossAxisAlignment: WrapCrossAlignment.center,
                                   spacing: 8,
                                   children: [
+                                    _userDetails!.photo.toString().isNotEmpty
+                                        ?
                                     FilePreviewImage(
-                                      bucketId: Credentials.userBucketId,
-                                      fileId: _userDetails!.photo ?? _userDetails!.avatar.toString(),
-                                      width: 36.w,
-                                      height: 36.h,
-                                      isCircular: true,
-                                      imageborderRadius: BorderRadius.zero,
-                                    ),
+                                            bucketId: Credentials.userBucketId,
+                                            fileId: _userDetails!.photo ?? '',
+                                            height: 52.h,
+                                            width: 52.w,
+                                          )
+                                        : CustomImageView(
+                                            imagePath: _userDetails!.avatar, // Default profile image
+                                            height: 52.h,
+                                            width: 52.w,
+                                            radius: BorderRadius.circular(50.w),
+                                          ),
                                     Text(
                                       _userDetails!.name ?? "Unknown",
                                       style: CustomTextStyles.text14w600cPrimary,
@@ -215,7 +223,7 @@ class _BidItemPaymentScreenState extends State<BidItemPaymentScreen> {
                                   children: [
                                     TextButton(
                                       onPressed: () {
-                                        // Get.to(() => const UserProfileScreen());
+                                        Get.to(() => ProfileScreen(userData: _userDetails));
                                       },
                                       child: Text(
                                         'View profile',
@@ -273,17 +281,30 @@ class _BidItemPaymentScreenState extends State<BidItemPaymentScreen> {
                         text: "Make Payment",
                         buttonStyle: TAppDecoration.softDark,
                         buttonTextStyle: CustomTextStyles.text14w400cPrimary,
-                        onPressed: () {
-                          showDialog(
+                        onPressed: () async {
+                           final user = SavedData.getUserData();
+                          if (user == null) {
+                            TLoaders.errorSnackBar(
+                              title: "Error",
+                              message: "Please login to make payment",
+                            );
+                            return;
+                          }
+                          if (user['isValidated'] == false) {
+                            TLoaders.errorSnackBar(
+                              title: "Error",
+                              message: "Your account is not validated. Please contact support.",
+                            );
+                            return;
+                          }
+                          await showDialog(
                             context: context,
                             builder: (BuildContext context) => SimpleDialog(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadiusStyle.roundedBorder10),
                               alignment: Alignment.center,
                               contentPadding: EdgeInsets.zero,
-                              children: [
-                                EscrowRequestScreen(
-                                  // product: widget.product,
-                                ),
-                              ],
+                              backgroundColor: const Color(0xFFFFFFFF),
+                              children: [EscrowRequestScreen(price: widget.highestBid.toString(), productId: widget.product.docId.toString(), sellerId: _userDetails!.docId)],
                             ),
                           );
                         },

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:uniswap/common/widgets/button/custom_elevated_button.dart';
 import 'package:uniswap/common/widgets/button/custom_icon_button.dart';
 import 'package:uniswap/common/widgets/button/custom_outlined_button.dart';
@@ -9,9 +8,8 @@ import 'package:uniswap/common/widgets/form/custom_text_form_field.dart';
 import 'package:uniswap/common/widgets/layouts/positioning_layout.dart';
 import 'package:uniswap/common/widgets/wallet_success.dart';
 import 'package:uniswap/controllers/monnify_controller.dart';
-import 'package:uniswap/controllers/product_controller.dart';
 import 'package:uniswap/core/app_export.dart';
-import 'package:uniswap/features/home/screens/wallet/widgets/topup_wallet.dart';
+import 'package:uniswap/features/home/screens/wallet/widgets/account_info.dart';
 import 'package:uniswap/theme/custom_button_style.dart';
 
 class WalletInfo extends StatefulWidget {
@@ -26,6 +24,8 @@ class _WalletInfoState extends State<WalletInfo> {
   double amount = 0;
   double escrowBalance = 0;
   bool isAmountVisible = true;
+
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -102,86 +102,57 @@ class _WalletInfoState extends State<WalletInfo> {
                         ),
                       ),
                       SizedBox(width: 5.w),
-                      // Obx(() {
-                      //   final balance = monifyController.accountBalance;
-                      //   if (balance.isEmpty) return Text("₦0", style: CustomTextStyles.text18w600cPrimary);
-                      //   // final wallet = wallets.first;
-                      //   // final wallet = wallets.firstWhere((wallet) => wallet.userId == userId, orElse: () => null);
-                      //   // amount = double.tryParse(balance['availableBalance']) ?? 0;
-                      //   // escrowBalance = double.tryParse(balance['escrowBalance']) ?? 0;
-                      //   return Column(
-                      //     children: [
-                      //       Column(
-                      //         children: [
-                      //           Text("Available balance", style: CustomTextStyles.text12w600c47),
-                      //           SizedBox(height: 3.h),
-                      //           Text(
-                      //             isAmountVisible ? NumberFormat.currency(locale: 'en_NG', symbol: '₦').format('') : '*****',
-                      //             style: CustomTextStyles.text18w600cPrimary,
-                      //           ),
-                      //         ],
-                      //       ),
-                      //        SizedBox(height: 3.h),
-                      //       Column(
-                      //         children: [
-                      //           Text("Ledger balance", style: CustomTextStyles.text12w600c47),
-                      //           SizedBox(height: 3.h),
-                      //           Text(
-                      //             isAmountVisible ? NumberFormat.currency(locale: 'en_NG', symbol: '₦').format('') : '*****',
-                      //             style: CustomTextStyles.text12w400cPrimary,
-                      //           ),
-                      //         ],
-                      //       ),
-                      //     ],
-                      //   );
-                      // }),
-                    
+                     
                       Obx(() {
-                       
                         final controller = Get.put(MonnifyController());
-
+          
                         if (controller.isLoading.value) {
                           return const Center(child: CircularProgressIndicator());
                         }
-
+          
                         if (controller.errorMessage.isNotEmpty) {
-                          return Text(
-                            controller.errorMessage.value,
-                            style: TextStyle(color: Colors.red),
+                          return SizedBox(
+                            width: 100.w,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              controller.errorMessage.value,
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 14.sp,
+                              ),
+                            ),
                           );
                         }
-
-                        final availableBalance = controller.accountBalance['availableBalance'] /1000 as double? ;
-                        final ledgerBalance = controller.accountBalance['ledgerBalance'] /1000 as double?;
-
-                      
+          
+                        final availableBalance = controller.accountBalance['availableBalance'] / 1000 as double?;
+                        final ledgerBalance = controller.accountBalance['ledgerBalance'] / 1000 as double?;
+          
                         return Column(
-                            children: [
-                              Column(
-                                children: [
-                                  Text("Available balance", style: CustomTextStyles.text12w600c47),
-                                  SizedBox(height: 3.h),
-                                  Text(
-                                    isAmountVisible ? controller.formatCurrency(availableBalance) : '*****',
-                                    style: CustomTextStyles.text18w600cPrimary,
-                                  ),
-                                ],
-                              ),
-                               SizedBox(height: 3.h),
-                              Column(
-                                children: [
-                                  Text("Ledger balance", style: CustomTextStyles.text12w600c47),
-                                  SizedBox(height: 3.h),
-                                  Text(
-                                    isAmountVisible ? controller.formatCurrency(ledgerBalance) : '*****',
-                                    style: CustomTextStyles.text12w400cPrimary,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          );
+                          children: [
+                            Column(
+                              children: [
+                                Text("Available balance", style: CustomTextStyles.text12w600c47),
+                                SizedBox(height: 3.h),
+                                Text(
+                                  isAmountVisible ? controller.formatCurrency(availableBalance) : '*****',
+                                  style: CustomTextStyles.text18w600cPrimary,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 3.h),
+                            Column(
+                              children: [
+                                Text("Ledger balance", style: CustomTextStyles.text12w600c47),
+                                SizedBox(height: 3.h),
+                                Text(
+                                  isAmountVisible ? controller.formatCurrency(ledgerBalance) : '*****',
+                                  style: CustomTextStyles.text12w400cPrimary,
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
                       }),
-                    
                     ],
                   ),
                 ),
@@ -223,16 +194,31 @@ class _WalletInfoState extends State<WalletInfo> {
                               ],
                             ),
                           ),
+                          
                           GestureDetector(
                             onTap: () {
-                              showDialog(
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (BuildContext context) => SimpleDialog(
+                              //     backgroundColor: Colors.white,
+                              //     // alignment: Alignment.center,
+                              //     contentPadding: EdgeInsets.zero,
+                              //     children: [AccountInfo()],
+                              //   ),
+                              // );
+          
+                              showModalBottomSheet(
                                 context: context,
-                                builder: (BuildContext context) => SimpleDialog(
-                                  backgroundColor: Colors.white,
-                                  // alignment: Alignment.center,
-                                  contentPadding: EdgeInsets.zero,
-                                  children: [TopupWallet()],
+                                isScrollControlled: true,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                                 ),
+                                builder: (context) {
+                                  return const FractionallySizedBox(
+                                    heightFactor: 0.5, // Half the screen height
+                                    child: AccountInfo(),
+                                  );
+                                },
                               );
                             },
                             child: Column(
@@ -264,8 +250,6 @@ class _WalletInfoState extends State<WalletInfo> {
       ),
     );
   }
-
-
 
   /// Section Widget
   Widget _withdraw(BuildContext context) {

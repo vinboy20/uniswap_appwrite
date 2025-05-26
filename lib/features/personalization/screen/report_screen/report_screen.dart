@@ -22,7 +22,7 @@ class _ReportScreenState extends State<ReportScreen> {
   TextEditingController inputReportController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final UserController _userController = Get.put(UserController()); // Initialize UserController
+  final UserController _userController = Get.find<UserController>(); // Initialize UserController
 
   Future<void> _submitReport() async {
     EasyLoading.show(status: "processing");

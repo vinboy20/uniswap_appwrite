@@ -20,11 +20,11 @@ class DrawerWidget extends StatefulWidget {
   @override
   State<DrawerWidget> createState() => _DrawerWidgetState();
 }
-
+  
 class _DrawerWidgetState extends State<DrawerWidget> {
   bool isLoading = true; // Add a loading flag
   final controller = Get.put(AuthController());
-  final productcontroller = Get.put(ProductController());
+  final productcontroller = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {

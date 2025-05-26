@@ -15,8 +15,7 @@ class SignUpScreen extends StatelessWidget {
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         body: SizedBox(
-          // width: THelperFunctions.screenWidth(),
-          // height: THelperFunctions.screenHeight(),
+         
           child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

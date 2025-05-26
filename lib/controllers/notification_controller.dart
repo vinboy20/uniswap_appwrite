@@ -4,6 +4,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:uniswap/core/utils/credentials.dart';
+import 'package:uniswap/data/saved_data.dart';
 import 'package:uniswap/models/notification_model.dart';
 
 class NotificationController extends GetxController {
@@ -41,7 +42,7 @@ class NotificationController extends GetxController {
   Future<void> fetchNotifications() async {
     try {
       // EasyLoading.show(status: 'Loading notifications...');
-      final userId = await getCurrentUserId();
+      final userId = SavedData.getUserId();
 
       if (userId == null) {
         EasyLoading.showError('User not logged in');

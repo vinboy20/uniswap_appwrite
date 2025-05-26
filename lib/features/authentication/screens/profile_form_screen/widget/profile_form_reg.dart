@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,7 +18,7 @@ class ProfileFormReg extends StatefulWidget {
 }
 
 class _ProfileFormRegState extends State<ProfileFormReg> {
-  final controller = Get.put(AuthController());
+  final _controller = Get.find<AuthController>();
 
   XFile? _pickedImage;
   bool profileLoading = false;
@@ -56,7 +55,7 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
     TextEditingController fullNameController = TextEditingController(text: username);
     TextEditingController emailController = TextEditingController(text: email);
     return Form(
-      key: controller.profileFormKey,
+      key: _controller.profileFormKey,
       child: Column(
         children: [
           // Image Picker
@@ -144,7 +143,7 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
               Text("Phone number", style: CustomTextStyles.text14w400),
               SizedBox(height: 5.h),
               CustomTextFormField(
-                controller: controller.phoneController,
+                controller: _controller.phoneController,
                 hintText: "phone number",
                 hintStyle: CustomTextStyles.text12w400,
                 textInputAction: TextInputAction.done,
@@ -168,13 +167,13 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: controller.selectedDate.value ?? DateTime.now(),
+                    initialDate: _controller.selectedDate.value ?? DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2030),
                   );
 
                   if (pickedDate != null) {
-                    controller.updateSelectedDate(pickedDate);
+                    _controller.updateSelectedDate(pickedDate);
                   }
                 },
                 child: Obx(() {
@@ -197,7 +196,7 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
                         Padding(
                           padding: EdgeInsets.only(left: 6.w),
                           child: Text(
-                            controller.formattedDate,
+                            _controller.formattedDate,
                             style: CustomTextStyles.text12w400,
                           ),
                         ),
@@ -220,7 +219,7 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
-                items: controller.genderItem
+                items: _controller.genderItem
                     .map((String item) => DropdownMenuItem<String>(
                           value: item,
                           child: Text(
@@ -232,9 +231,9 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
                           ),
                         ))
                     .toList(),
-                value: controller.selectedGenderValue.value,
+                value: _controller.selectedGenderValue.value,
                 onChanged: (value) {
-                  controller.updateSelectedValue(value);
+                  _controller.updateSelectedValue(value);
                 },
                 buttonStyleData: ButtonStyleData(
                   height: 50.h,
@@ -281,7 +280,7 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
               Text("Bio (optional)", style: CustomTextStyles.text14w400),
               SizedBox(height: 5.h),
               CustomTextFormField(
-                controller: controller.bioController,
+                controller: _controller.bioController,
                 hintText: "Biography",
                 hintStyle: CustomTextStyles.text12w400,
                 textInputType: TextInputType.text,
@@ -299,7 +298,7 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
               Text("Add relevant link (optional)", style: CustomTextStyles.text14w400),
               SizedBox(height: 5.h),
               CustomTextFormField(
-                controller: controller.linkController,
+                controller: _controller.linkController,
                 hintText: "Link",
                 hintStyle: CustomTextStyles.text12w400,
                 textInputType: TextInputType.text,
@@ -316,7 +315,7 @@ class _ProfileFormRegState extends State<ProfileFormReg> {
             color: TColors.primary,
             onPressed: () async {
               //Show loading spinner
-              controller.profileUpdate(_pickedImage);
+              _controller.profileUpdate(_pickedImage);
             },
           )
         ],

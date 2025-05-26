@@ -13,11 +13,7 @@ class LocationInputScreen extends StatefulWidget {
 }
 
 class _LocationInputScreenState extends State<LocationInputScreen> {
-  // Completer<GoogleMapController> googleMapController = Completer();
-
-  // GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-  // TextEditingController locationController = TextEditingController();
+ 
 
   @override
   Widget build(BuildContext context) {

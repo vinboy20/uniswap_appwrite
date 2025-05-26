@@ -15,8 +15,31 @@ class BidScreen extends StatefulWidget {
 
 class _BidScreenState extends State<BidScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  // final ProductController controller = Get.find<ProductController>();
-  final ProductController controller = Get.put(ProductController());
+  final ProductController controller = Get.find<ProductController>();
+
+   // Fetch the highest bid
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Fetch the highest bid when the widget is initialized
+  //   _fetchBidData();
+  // }
+
+  // Future<void> _fetchBidData() async {
+  //   // Fetch the highest bid
+  //   final productId = widget.product!.docId;
+  //   final highestBid = await productController.getHighestBid(productId ?? ""); // Pass the productId
+  //   if (highestBid != null) {
+  //     setState(() {
+  //       _highestBid = highestBid; // Default to 0.0 if highestBid is null
+  //     });
+  //   } else {
+  //     setState(() {
+  //       _highestBid = 0.0; // Default to 0.0 if there are no bids
+  //     });
+  //   }
+  // }
+
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +90,6 @@ class _BidScreenState extends State<BidScreen> {
           child: DrawerWidget(),
         ),
         body: Obx(() {
-          // ignore: unrelated_type_equality_checks
           if (controller.isLoading.value) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -91,8 +113,9 @@ class _BidScreenState extends State<BidScreen> {
                 itemCount: controller.userBids.length,
                 itemBuilder: (context, int index) {
                   final bid = controller.userBids[index];
-                  final product = controller.products.firstWhereOrNull((element) => element.docId == bid.productId);
-                  return BidItem(product: product, bid: bid);
+                  
+                  // final product = controller.products.firstWhereOrNull((element) => element.docId == bid.productId);
+                  return BidItem(bid: bid);
                 },
               ),
             );

@@ -9,7 +9,8 @@ class TouchId extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final AuthController controller = Get.put(AuthController());
+  
+  final AuthController controller = Get.find<AuthController>();
     
     return GestureDetector(
       onTap: () async {

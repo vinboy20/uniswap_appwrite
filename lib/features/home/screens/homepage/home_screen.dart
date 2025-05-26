@@ -21,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final controller = Get.put(ProductController());
+  final controller = Get.find<ProductController>();
   @override
   void initState() {
     super.initState();
